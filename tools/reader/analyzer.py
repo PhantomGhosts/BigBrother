@@ -1,8 +1,9 @@
 #!/bin/python
 
-# import files
+# import
 import sys, getopt, re
 from optparse import OptionParser 
+
 
 # colors
 class bcolors:
@@ -14,6 +15,8 @@ class bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+def bold(string):
+	return bcolors.BOLD + str(string) + bcolors.ENDC
 
 # +++++ verbose symbol legend +++++
 # | # - info                      |
@@ -23,20 +26,57 @@ class info:
 	info = bcolors.OKBLUE + '[#] ' + bcolors.ENDC
 	process = bcolors.WARNING + '[+] ' + bcolors.ENDC
 
+class _Getch:
+    # Gets a single character from standard input.  Does not echo to the screen.
+    def __init__(self):
+        try:
+            self.impl = _GetchWindows()
+        except ImportError:
+            self.impl = _GetchUnix()
+
+    def __call__(self): return self.impl()
+class _GetchUnix:
+    def __init__(self):
+        import tty, sys
+
+    def __call__(self):
+        import sys, tty, termios
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
+class _GetchWindows:
+    def __init__(self):
+        import msvcrt
+
+    def __call__(self):
+        import msvcrt
+        return msvcrt.getch()
+def promt(string):
+	x = _Getch()
+	print "%s" % string
+	return x()
+
 # +++++++ MAIN +++++++
 def main():
 	# ++++++ parser ++++++
 	usage = "usage: %prog [options]"
 	parser = OptionParser(usage=usage)
 	parser.add_option("-f", "--file", dest="filename", help="read log data from FILE", metavar="FILE")
-	parser.add_option("-q", "--quiet", action="store_false", dest="verbose", default=False, help="don't print status messages to stdout")
+	parser.add_option("-o", "--output", dest="output", default="credentials.csv", help="write result on FILE", metavar="FILE")
+	parser.add_option("-q", "--quiet", action="store_false", dest="verbose", default=True, help="don't print status messages to stdout")
 	parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="verbose output to stdout")
 	(options, args) = parser.parse_args()
+
 	# +++++ options +++++
 	if len(args) != 0 or options.filename == None:
 		parser.error("incorrect number of arguments type -h to view help")
 	if options.verbose:
-		print info.info + "reading %s%s%s..." % (bcolors.BOLD, options.filename, bcolors.ENDC)
+		print info.info + "reading %s ..." % bold(options.filename)
 
 	# ++++++ main ++++++
 	# read from file
@@ -44,19 +84,16 @@ def main():
 		lines = f.readlines()
 		# if verbose 
 		if options.verbose:
-			print info.info + "File length: %s%d lines%s" % (bcolors.BOLD, len(lines), bcolors.ENDC)
+			print info.info + "File length: %s" % bold(str(len(lines)) + " lines")
 
 	# to analyze our data we have to:
-	# I.	replace invalid values
-	# II.	get usernames
-	# 	1.		extend array
-	# 	2.		split elements
-	# 	3.		tidy up
-	#		a.		replace BLOCK
+	# * replace invalid values
+	# * get credentials
+	# *  write results
 
-	# I.
+	# +++++ INVALID CHARS ++++=
 	lines_refined = []
-	username_list = []
+	credentials_list = []
 	for line in lines:
 		line = line.replace("[CTRL][`~]", "@")
 		line = line.replace("[CTRL]", "")
@@ -68,18 +105,21 @@ def main():
 		line = line.replace("[CAPS LOCK]", "\\B")
 		line = line.replace("[TAB]", "\\t")
 		lines_refined.append(line)
+	# verbose
 	if options.verbose:
-		print info.process + "Replaced " + bcolors.BOLD + "invalid characters" + bcolors.ENDC
-	
-	# II.
+		print info.process + "Replaced %s" % bold("invalid characters")
+
+	# +++++ GET CREDENTIALS +++++
 	# 1.  extend array
 	res = "".join(lines_refined)
 	# 2. split elements
-	line_splitted = re.split(' ', res)
+	line_splitted = re.split(' ', res.replace('\\t', ' '))
+	# verbose
 	if options.verbose:
 		print info.process + "Lines Splitted"
-		print info.info + "Elements splitted: " + bcolors.BOLD + "%s" % len(line_splitted) + bcolors.ENDC
+		print info.info + "Elements splitted: %s" % bold(len(line_splitted))
 	# 3. tidy up
+	lines_refined = []
 	for element in line_splitted:
 		if element.find("@") != -1 or element.find("miii0001.") != -1:
 			# a. replace BLOCK
@@ -93,14 +133,64 @@ def main():
 				index = element.find("\\s")
 				element = element[:(index + 2)] + element[(index + 2)].upper() + element[(index + 3):]
 				element = element.replace("\\s", "", 1)	
-			if element.find("MIII0001.") != -1:
-				index = element.find("MIII0001.")
-				username = element[index:(index + 16)]
-				username_list.append(username)
-				if options.verbose:
-					sys.stdout.write("\r%sUsername extracted: %s%d%s" % (info.info, bcolors.BOLD, len(username_list), bcolors.ENDC))
+			lines_refined.append(element)
+	# 4. append usernames
+	# functions
+	def recognisedFailed(string, subject="this"):
+		return raw_input("%s%sWARNING - Can't recognise %s%s\n%s -> " % (bcolors.WARNING, bcolors.BOLD, subject, bcolors.ENDC, string))
+	def checkDuplicate(string, arr):
+		for i in arr:
+			if i[0] == string:
+				return True
 			else:
 				pass
-	print ""
+		return False
+	for x, element in enumerate(lines_refined):
+		# a. user_ids
+		if element.find("MIII0001.") != -1:
+			index = element.find("MIII0001.")
+			username = element[index:(index + 16)]
+			try:
+				passwd = recognisedFailed(element[(element.find(username) + len(username)):], "password")
+			except:
+				passwd = recognisedFailed(lines_refined[x + 1], "password")
+			if passwd == '':
+				passwd = element[(element.find(username) + len(username)):]
+			credential = (username, passwd)
+			if checkDuplicate(username, credentials_list) == False:
+				credentials_list.append(credential)
+
+		# b. emails
+		elif element.find("@") != -1:
+			username = recognisedFailed(element, "email address")
+			try:
+				passwd = recognisedFailed(element[(element.find(username) + len(username)):], "password")
+			except:
+				passwd = recognisedFailed(lines_refined[x + 1], "password")
+			if passwd == '':
+				passwd = element[(element.find(username) + len(username)):]
+			credential = (username, passwd)
+			if checkDuplicate(username, credentials_list) == False:
+				credentials_list.append(credential)
+	# verbose
+	if options.verbose:
+		count_usernames = 0
+		count_passwds = 0
+		for i in credentials_list:
+			if i[0] != '':
+				count_usernames += 1
+			if i[1] != '':
+				count_passwds += 1
+		print "%sUsernames extracted: %s" % (info.info, bold(count_usernames))
+		print "%sPasswords extracted: %s" % (info.info, bold(count_passwds))
+
+	# +++++ WRITE RESULTS +++++
+	f = open(options.output, "a")
+	for cred in credentials_list:
+		f.write("%s,%s\n" % (cred[0], cred[1]))
+	f.close()
+	if options.verbose:
+		print "%sWrited result on file %s" % (info.process, options.output)
+
 if __name__ == "__main__":
 	main()
