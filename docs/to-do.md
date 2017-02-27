@@ -1,6 +1,7 @@
 # Keylogger
 ## keylogger.cpp
 * [ ] write datetime
+* [ ] starts when user log on
 
 ## analyzer.py
 * [x] encrypt option
@@ -10,3 +11,4 @@
 * [ ] progesses bar
 * [ ] setup.py in bin
 * [ ] tidy code
+* [ ] refine username recognition

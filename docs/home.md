@@ -5,7 +5,6 @@ Tools are divided in **2** different **categories** each of them split in **clas
 
 ## CLASS-0
 The **Rootkit** is the only element in this class and it provides:
-
 * Concealment
 * Command and control
 * Surveillance
@@ -13,6 +12,6 @@ The **Rootkit** is the only element in this class and it provides:
 ## LOCAL
 ### Surveillance
 * [**Keylogger**](local/surveillance/keylogger.md)
-
+* [**Screenshoter**](local/surveillance/screenshoter.md)
 
 ## NETWORK
