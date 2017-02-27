@@ -1,7 +1,7 @@
 #!/bin/python
 
 # import
-import sys, getopt, re
+import sys, getopt, re, os
 from optparse import OptionParser 
 
 
@@ -21,10 +21,12 @@ def bold(string):
 # +++++ verbose symbol legend +++++
 # | # - info                      |
 # | + - process                   |
+# | @ - config
 # +++++++++++++++++++++++++++++++++
 class info:
 	info = bcolors.OKBLUE + '[#] ' + bcolors.ENDC
 	process = bcolors.WARNING + '[+] ' + bcolors.ENDC
+	config = bcolors.HEADER + '[@] ' + bcolors.ENDC
 
 class _Getch:
     # Gets a single character from standard input.  Does not echo to the screen.
@@ -70,12 +72,21 @@ def main():
 	parser.add_option("-o", "--output", dest="output", default="credentials.csv", help="write result on FILE", metavar="FILE")
 	parser.add_option("-q", "--quiet", action="store_false", dest="verbose", default=True, help="don't print status messages to stdout")
 	parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="verbose output to stdout")
+	parser.add_option("-e", "--encrypt", action="store_true", dest="encrypt", default=False, help="encrypt results")
 	(options, args) = parser.parse_args()
 
 	# +++++ options +++++
 	if len(args) != 0 or options.filename == None:
 		parser.error("incorrect number of arguments type -h to view help")
-	if options.verbose:
+	if options.verbose:	
+		if options.encrypt == True:
+			print "%sEncrypt       %s" % (info.config, (bcolors.BOLD + bcolors.OKGREEN + "ON" + bcolors.ENDC))
+		else:
+			print "%sEncrypt       %s" % (info.config, (bcolors.BOLD + bcolors.FAIL + "OFF" + bcolors.ENDC))
+		resume = promt("Press C to continue...")
+		if resume != 'c':
+			print "%s%sSTOPPED%s" % (bcolors.FAIL, bcolors.BOLD, bcolors.ENDC)
+			sys.exit()
 		print info.info + "reading %s ..." % bold(options.filename)
 
 	# ++++++ main ++++++
@@ -161,7 +172,7 @@ def main():
 				credentials_list.append(credential)
 
 		# b. emails
-		elif element.find("@") != -1:
+		if element.find("@") != -1:
 			username = recognisedFailed(element, "email address")
 			try:
 				passwd = recognisedFailed(element[(element.find(username) + len(username)):], "password")
@@ -191,6 +202,10 @@ def main():
 	f.close()
 	if options.verbose:
 		print "%sWrited result on file %s" % (info.process, options.output)
+	if options.encrypt:
+		if options.verbose:
+			print "%sEncrypting in AES-256 algorithm..." % info.process
+		os.system("gpg -co %s --cipher-algo AES256 %s" % (options.output, options.output))
 
 if __name__ == "__main__":
 	main()
