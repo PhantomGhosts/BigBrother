@@ -1,9 +1,9 @@
-BigBrother is a collection of tools with the purpose of gaining informations quietly.
+BigBrother is a collection of tools for the purpose of gaining information quietly.
 
 # Tools
-Tools are divided in **2** different **categories** each of them splitted in **classes**:
+Tools are divided in **2** different **categories** each of them split in **classes**:
 
-# 0-CLASS
+# CLASS-0
 The **Rootkit** is the only element in this class and it provides:
 
 * Concealment
