@@ -201,6 +201,7 @@ def main():
 	f.close()
 	if options.verbose:
 		print "%sWrited result on file %s" % (info.process, options.output)
+	# ++++ ENCRYPT ++++
 	if options.encrypt:
 		if options.verbose:
 			print "%sEncrypting in AES-256 algorithm..." % info.process
