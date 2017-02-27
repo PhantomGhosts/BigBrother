@@ -66,9 +66,8 @@ def promt(string):
 # +++++++ MAIN +++++++
 def main():
 	# ++++++ parser ++++++
-	usage = "usage: %prog [options]"
+	usage = "usage: %prog [options] FILE"
 	parser = OptionParser(usage=usage)
-	parser.add_option("-f", "--file", dest="filename", help="read log data from FILE", metavar="FILE")
 	parser.add_option("-o", "--output", dest="output", default="credentials.csv", help="write result on FILE", metavar="FILE")
 	parser.add_option("-q", "--quiet", action="store_false", dest="verbose", default=True, help="don't print status messages to stdout")
 	parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="verbose output to stdout")
@@ -76,7 +75,7 @@ def main():
 	(options, args) = parser.parse_args()
 
 	# +++++ options +++++
-	if len(args) != 0 or options.filename == None:
+	if len(args) != 1:
 		parser.error("incorrect number of arguments type -h to view help")
 	if options.verbose:	
 		if options.encrypt == True:
@@ -87,11 +86,11 @@ def main():
 		if resume != 'c':
 			print "%s%sSTOPPED%s" % (bcolors.FAIL, bcolors.BOLD, bcolors.ENDC)
 			sys.exit()
-		print info.info + "reading %s ..." % bold(options.filename)
+		print info.info + "reading %s ..." % bold(args[0])
 
 	# ++++++ main ++++++
 	# read from file
-	with open(options.filename, "r") as f:
+	with open(args[0], "r") as f:
 		lines = f.readlines()
 		# if verbose 
 		if options.verbose:
