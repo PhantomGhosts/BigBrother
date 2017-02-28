@@ -1,9 +1,12 @@
 # Nomenclature
 *for the nomenclature see [Nomenclature](../../../../nomenclature.md)*
-**Kingdom**: *Anagenesis*
-**Class**: *Katascopos*
-**Order**: *User Based*
-**Family**: *Screenshoter*
+
+| Kinds       | Names        |
+|-------------|--------------|
+| **Kingdom** | *Anagenesis* |
+| **Class**   | *Katascopos* |
+| **Order**   | *User Based* |
+| **Family**  | *Screenshoter*  |
 
 # Behavior
 
