@@ -6,30 +6,25 @@ Every tool in **BigBrother** has an own name based on this nomenclature:
 * **Species**
 
 # Kingdom
-* **anagenesis** - *Reptilia*
-Without reproduction
-* **aytogenesis** - *Insecta*
-With automatic reproduction
-* **paragenesis** - *Bacteria*
-With particular reproduction
+* **Anagenesis** - *Reptilia*: Without reproduction
+* **Aytogenesis** - *Insecta*: With automatic reproduction
+* **Paragenesis** - *Bacteria*: With particular reproduction
 
 # Class
 ## Anagenesis - Reptilia
-* **anacrypis** - *Squamata*
-Hidder and cryptic beings.
-* **katascopos** - *Crocodilia*
-Surveil
-* ** 
+* **Anacrypsis** - *Squamata*: Hidden and cryptic beings.
+* **Katascopos** - *Crocodilia*: Overseers beings. 
 
 ## Aytogenesis - Insecta
 
-## Paragenesis 
+## Paragenesis - Bacteria
 
 # Order
+## Katascopos - Crocodilia
+* **User based**: based on user actions.
 
 # Family
-
-* **keylogger** - **
+* **Keylogger**:
 
 # Species
 

@@ -1,17 +1,13 @@
 BigBrother is a collection of tools for the purpose of gaining information quietly.
 
 # Tools
-Tools are divided in **2** different **categories** each of them split in **classes**:
+Tools are divided based on this [**Nomenclature**](nomenclature.md).
 
-## CLASS-0
-The **Rootkit** is the only element in this class and it provides:
-* Concealment
-* Command and control
-* Surveillance
+# Setup
+To setup please see the [**Setup Guide**](how-to-setup.md)
 
-## LOCAL
-### Surveillance
-* [**Keylogger**](local/surveillance/keylogger.md)
-* [**Screenshoter**](local/surveillance/screenshoter.md)
+# Contribute
+To contribute to this project please join in our **Slack Group** emailing one moderator.
 
-## NETWORK
+# To Do
+To check to do see [**To Do**](to-do.md)
