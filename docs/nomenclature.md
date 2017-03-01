@@ -14,7 +14,7 @@ Every tool in **BigBrother** has an own name based on this nomenclature:
 ## Anagenesis - Reptilia
 * [**Anacrypsis**](#anacrypsis-squamata) - *Squamata*: Hidden and cryptic beings.
 * [**Katascopos**](#katascopos-crocodilia) - *Crocodilia*: Overseers beings. 
-* [**Ypnokratos**](#ypnokratos-dinosauria) - *Dinosauria*: The most powerful being that remain hidden until it chooses to reaveal itself.
+* [**Ypnokratos**](#ypnokratos-dinosauria) - *Dinosauria*: The most powerful beings, they remain hidden until they choose to reaveal themself.
 
 # Order
 ## Katascopos - Crocodilia
