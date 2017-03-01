@@ -18,4 +18,15 @@
 *for more informations see [*To-Do*](../../../../../to-do.md)*
 ## keylogger.cpp
 * [ ] write datetime
+* [ ] send HTTPS POST request
 * [ ] starts when user log on
+
+## Tools
+### analyzer.py
+* [x] encrypt option
+* [x] command line control (pause and continue)
+* [ ] check file extension
+* [ ] modes (MySQL, file txt, ...)
+* [ ] progesses bar
+* [ ] tidy code
+* [ ] refine username recognition
