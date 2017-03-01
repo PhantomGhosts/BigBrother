@@ -12,6 +12,8 @@
 # Technical Specifications
 **Current version**: 0.0
 
+**Efficency**: **Low**
+
 # Behavior
 
 # To Do
