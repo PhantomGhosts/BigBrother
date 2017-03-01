@@ -14,22 +14,35 @@ Every tool in **BigBrother** has an own name based on this nomenclature:
 ## Anagenesis - Reptilia
 * [**Anacrypsis**](#anacrypsis-squamata) - *Squamata*: Hidden and cryptic beings.
 * [**Katascopos**](#katascopos-crocodilia) - *Crocodilia*: Overseers beings. 
+* [**Ypnokratos**](#ypnokratos-dinosauria) - *Dinosauria*: The most powerful being that remain hidden until it chooses to reaveal itself.
 
 # Order
 ## Katascopos - Crocodilia
 * [**User based**](#user-based): based on user actions.
+
+## Ypnokratos - Dinosauria
+* [**Deep Abyss**](#deep-abyss): work on operating system and processor directives.
 
 # Family
 ## User Based
 * [**Keylogger**](#keylogger)
 * [**Screenshoter**](#screenshoter)
 
+## Deep Abyss
+* [**Rootkit**](#rootkit)
+
 # Species
 ## Keylogger
-*for more information see [Keylogger](anagenesis/katascopos/user_based/keylogger/keylogger.md)*
+*for more informations see [Keylogger](anagenesis/katascopos/user_based/keylogger/keylogger.md)*
 * [**WindowsAPI**](anagenesis/katascopos/user_based/keylogger/windows_api/windows_api.md)
 
 ## Screenshoter
-*for more information see [Screenshoter](anagenesis/katascopos/user_based/screenshoter/screenshoter.md)*
+*for more informations see [Screenshoter](anagenesis/katascopos/user_based/screenshoter/screenshoter.md)*
 
-for the moment these species are *uncharted*
+for the moment these species are *uncharted*.
+
+## Rootkits
+*for more informations see [Rootkit](anagenesis/ypnokratos/deep_abyss/rootkit/rootkit.md)*
+* **Phantom** - *NoData*
+
+for the moment the other species are *uncharted*.
