@@ -15,12 +15,11 @@
 **Efficency**: **Low**
 
 # Behavior
-**v.0.2**
-
-**NEW FEATURE**
+## v.0.2
+###NEW FEATURE
 Now regist also mouse clicks.
 
-**v.0.1**
+## v.0.1
 This keylogger, when launched, starts an hidden windows that quietly regist every keystrokes pressed and save them on a log file.
 
 
