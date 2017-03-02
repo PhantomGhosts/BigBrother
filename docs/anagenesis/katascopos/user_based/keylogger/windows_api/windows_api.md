@@ -16,7 +16,7 @@
 
 # Behavior
 ## v.0.2
-###NEW FEATURE
+### NEW FEATURE
 Now regist also mouse clicks.
 
 ## v.0.1
