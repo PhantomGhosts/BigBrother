@@ -37,8 +37,8 @@ This keylogger, when launched, starts an hidden windows that quietly regist ever
 ### analyzer.py
 * [x] encrypt option
 * [x] command line control (pause and continue)
-* [ ] check file extension
+* [X] tidy code
+* [X] refine username recognition
 * [ ] modes (MySQL, file txt, ...)
+* [ ] check file extension
 * [ ] progesses bar
-* [ ] tidy code
-* [ ] refine username recognition
