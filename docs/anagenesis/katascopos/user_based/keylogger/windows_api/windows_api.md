@@ -10,14 +10,16 @@
 | **Species** | [*API keylogger*](https://en.wikipedia.org/wiki/Keystroke_logging#Software-based_keyloggers) |
 
 # Technical Specifications
-**Current version**: 0.2
+**Current version**: 0.3
 
 **Efficency**: **Low**
 
 # Behavior
+## v.0.3
+* **NF** Now write also datetime in log file
+
 ## v.0.2
-### NEW FEATURE
-Now regist also mouse clicks.
+* **NF** Now regist also mouse clicks.
 
 ## v.0.1
 This keylogger, when launched, starts an hidden windows that quietly regist every keystrokes pressed and save them on a log file.
@@ -27,7 +29,7 @@ This keylogger, when launched, starts an hidden windows that quietly regist ever
 *for more informations see [*To-Do*](../../../../../to-do.md)*
 ## keylogger.cpp
 * [X] add mouse events
-* [ ] write datetime
+* [X] write datetime
 * [ ] send HTTPS POST request
 * [ ] starts when user log on
 
