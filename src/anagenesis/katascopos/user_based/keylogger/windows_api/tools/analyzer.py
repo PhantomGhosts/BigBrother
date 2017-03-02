@@ -73,6 +73,7 @@ def main():
 	parser.add_option("-q", "--quiet", action="store_false", dest="verbose", default=True, help="don't print status messages to stdout")
 	parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="verbose output to stdout")
 	parser.add_option("-e", "--encrypt", action="store_true", dest="encrypt", default=False, help="encrypt results")
+	parser.add_option("-m", "--mode", action="store", dest="mode", default="CSV", help="modes to write results on file: CSV")
 	(options, args) = parser.parse_args()
 
 	# +++++ options +++++
@@ -80,9 +81,10 @@ def main():
 		parser.error("incorrect number of arguments type -h to view help")
 	if options.verbose:	
 		if options.encrypt == True:
-			print "%sEncrypt       %s" % (info.config, (bcolors.BOLD + bcolors.OKGREEN + "ON" + bcolors.ENDC))
+			print "%sEncrypt        %s" % (info.config, (bcolors.BOLD + bcolors.OKGREEN + "ON" + bcolors.ENDC))
 		else:
-			print "%sEncrypt       %s" % (info.config, (bcolors.BOLD + bcolors.FAIL + "OFF" + bcolors.ENDC))
+			print "%sEncrypt        %s" % (info.config, (bcolors.BOLD + bcolors.FAIL + "OFF" + bcolors.ENDC))
+		print "%sMode           %s" % (info.config, (bcolors.BOLD + bcolors.OKBLUE + options.mode + bcolors.ENDC))
 		resume = promt("Press C to continue...")
 		if resume != 'c':
 			print "%s%sSTOPPED%s" % (bcolors.FAIL, bcolors.BOLD, bcolors.ENDC)
@@ -138,7 +140,11 @@ def main():
 			while element.find("\\s") != -1:
 				index = element.find("\\s")
 				element = element[:(index + 2)] + element[(index + 2)].upper() + element[(index + 3):]
-				element = element.replace("\\s", "", 1)	
+				element = element.replace("\\s", "", 1)
+			# replace BACKSPACE
+			while element.find("\\b") != -1:
+				index = element.find("\\b")
+				element = element[:(index - 1)] + element[(index + 2):]
 			lines_refined.append(element)
 	
 	# +++++ GET CREDENTIALS +++++
@@ -155,7 +161,7 @@ def main():
 
 		# emails
 		if element.find("@") != -1:
-			username = recognisedFailed(element, "email address")
+			username = element
 			passwd = lines_refined[x + 1]
 			credential = (username, passwd)
 			if checkDuplicate(username, credentials_list) == False:
