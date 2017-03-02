@@ -1,11 +1,13 @@
 #!/bin/python
-
-# import
 import sys, getopt, re, os
 from optparse import OptionParser 
 
+# +++++ verbose symbol legend +++++
+# | # - info                      |
+# | + - process                   |
+# | @ - config					  |
+# +++++++++++++++++++++++++++++++++
 
-# colors
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -15,19 +17,10 @@ class bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
-def bold(string):
-	return bcolors.BOLD + str(string) + bcolors.ENDC
-
-# +++++ verbose symbol legend +++++
-# | # - info                      |
-# | + - process                   |
-# | @ - config
-# +++++++++++++++++++++++++++++++++
 class info:
 	info = bcolors.OKBLUE + '[#] ' + bcolors.ENDC
 	process = bcolors.WARNING + '[+] ' + bcolors.ENDC
 	config = bcolors.HEADER + '[@] ' + bcolors.ENDC
-
 class _Getch:
     # Gets a single character from standard input.  Does not echo to the screen.
     def __init__(self):
@@ -58,10 +51,18 @@ class _GetchWindows:
     def __call__(self):
         import msvcrt
         return msvcrt.getch()
+
 def promt(string):
 	x = _Getch()
 	print "%s" % string
 	return x()
+def bold(string):
+	return bcolors.BOLD + str(string) + bcolors.ENDC
+def checkDuplicate(string, arr):
+	for i in arr:
+		if i[0] == string:
+			return True
+	return False
 
 # +++++++ MAIN +++++++
 def main():
@@ -89,17 +90,11 @@ def main():
 		print info.info + "reading %s ..." % bold(args[0])
 
 	# ++++++ main ++++++
-	# read from file
 	with open(args[0], "r") as f:
 		lines = f.readlines()
-		# if verbose 
+		# verbose 
 		if options.verbose:
 			print info.info + "File length: %s" % bold(str(len(lines)) + " lines")
-
-	# to analyze our data we have to:
-	# * replace invalid values
-	# * get credentials
-	# *  write results
 
 	# +++++ INVALID CHARS ++++=
 	lines_refined = []
@@ -113,72 +108,55 @@ def main():
 		line = line.replace("[ENTER]", "")
 		line = line.replace("[SHIFT]", "\\s")
 		line = line.replace("[CAPS LOCK]", "\\B")
-		line = line.replace("[TAB]", "\\t")
 		lines_refined.append(line)
 	# verbose
 	if options.verbose:
 		print info.process + "Replaced %s" % bold("invalid characters")
 
-	# +++++ GET CREDENTIALS +++++
-	# 1.  extend array
+	# extend array
 	res = "".join(lines_refined)
-	# 2. split elements
+	# split elements
+	res.replace("[LEFT_CLICK]", ' ')	# left_click
+	res.replace("[RIGHT_CLICK]", ' ')	# right_click
+	res.replace("[TAB]", ' ') 			# tab
 	line_splitted = re.split(' ', res.replace('\\t', ' '))
 	# verbose
 	if options.verbose:
 		print info.process + "Lines Splitted"
 		print info.info + "Elements splitted: %s" % bold(len(line_splitted))
-	# 3. tidy up
+	# tidy up
 	lines_refined = []
 	for element in line_splitted:
 		if element.find("@") != -1 or element.find("miii0001.") != -1:
-			# a. replace BLOCK
+			# replace BLOCK
 			while element.find("\\B") != -1:
 				index = element.find("\\B")
 				next_index = element.find("\\B", index + 2)
 				element = element[:(index + 2)] + element[(index + 2):next_index].upper() + element[next_index:]
 				element = element.replace("\\B", "", 2)
-			# b. repalce SHIFT
+			# repalce SHIFT
 			while element.find("\\s") != -1:
 				index = element.find("\\s")
 				element = element[:(index + 2)] + element[(index + 2)].upper() + element[(index + 3):]
 				element = element.replace("\\s", "", 1)	
 			lines_refined.append(element)
-	# 4. append usernames
-	# functions
-	def recognisedFailed(string, subject="this"):
-		return raw_input("%s%sWARNING - Can't recognise %s%s\n%s -> " % (bcolors.WARNING, bcolors.BOLD, subject, bcolors.ENDC, string))
-	def checkDuplicate(string, arr):
-		for i in arr:
-			if i[0] == string:
-				return True
-			else:
-				pass
-		return False
+	
+	# +++++ GET CREDENTIALS +++++
+	# append usernames	
 	for x, element in enumerate(lines_refined):
-		# a. user_ids
+		# user_ids
 		if element.find("MIII0001.") != -1:
 			index = element.find("MIII0001.")
 			username = element[index:(index + 16)]
-			try:
-				passwd = recognisedFailed(element[(element.find(username) + len(username)):], "password")
-			except:
-				passwd = recognisedFailed(lines_refined[x + 1], "password")
-			if passwd == '':
-				passwd = element[(element.find(username) + len(username)):]
+			passwd = lines_refined[x + 1]
 			credential = (username, passwd)
 			if checkDuplicate(username, credentials_list) == False:
 				credentials_list.append(credential)
 
-		# b. emails
+		# emails
 		if element.find("@") != -1:
 			username = recognisedFailed(element, "email address")
-			try:
-				passwd = recognisedFailed(element[(element.find(username) + len(username)):], "password")
-			except:
-				passwd = recognisedFailed(lines_refined[x + 1], "password")
-			if passwd == '':
-				passwd = element[(element.find(username) + len(username)):]
+			passwd = lines_refined[x + 1]
 			credential = (username, passwd)
 			if checkDuplicate(username, credentials_list) == False:
 				credentials_list.append(credential)
@@ -204,7 +182,7 @@ def main():
 	# ++++ ENCRYPT ++++
 	if options.encrypt:
 		if options.verbose:
-			print "%sEncrypting in AES-256 algorithm..." % info.process
+			print "%sEncrypting with AES-256 algorithm..." % info.process
 		os.system("gpg -co %s --cipher-algo AES256 %s" % (options.output, options.output))
 
 if __name__ == "__main__":
