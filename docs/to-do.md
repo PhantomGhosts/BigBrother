@@ -1,14 +1,5 @@
 # Keylogger
+*see keylogger [to do](anagenesis/katascopos/user_based/keylogger/windows_api/windows_api.md)*
 ## keylogger.cpp
-* [ ] write datetime
+* [x] write datetime
 * [ ] starts when user log on
-
-## analyzer.py
-* [x] encrypt option
-* [ ] check file extension
-* [x] command line control (pause and continue)
-* [ ] modes (MySQL, file txt, ...)
-* [ ] progesses bar
-* [ ] setup.py in bin
-* [ ] tidy code
-* [ ] refine username recognition
