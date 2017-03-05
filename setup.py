@@ -1,5 +1,6 @@
 import ConfigParser
 import tarfile
+import yaml
 import sys, os, os.path
 
 # +++ CLASSES +++
@@ -68,6 +69,12 @@ def promt(string, new_line=True):
 	else:
 		print "%s" % string
 	return x()
+def load_yaml(file_name):
+	with open(file_name, 'r') as yaml_config_file:
+		try:
+			return yaml.load(yaml_config_file)
+		except yaml.YAMLError as exc:
+			print(info.error(exc))
 def init_dir(directory):
 	try: 
 		os.makedirs(directory)
@@ -88,11 +95,11 @@ def importer(module):
 			os.system("pip install %s -q" % module)
 		except:
 			print info.error("pip required, install pip") 
-def donwloader(module, path):
+def donwloader(module, path, priv_token):
 	absolute_path = path + '/' + module['path'] + '/' + module['name'] + '.tar.gz'
 	with open(absolute_path, "wb") as module_file:
 		print "%sDownloading %s" % (info.process, clrs.BOLD + module['name'] + clrs.ENDC)
-		response = requests.get(module['url'], stream=True)
+		response = requests.get(module['url'] + '&private_token=' + priv_token, stream=True)
 		total_length = response.headers.get('content-length')
 		if total_length is None: # no content length header
 			module_file.write(response.content)
@@ -104,8 +111,8 @@ def donwloader(module, path):
 				module_file.write(data)
 				done = int(50 * data_length / total_length)
 				sys.stdout.write("\r[%s%s]" % ('=' * done, ' ' * (50-done)) )
-				sys.stdout.write('\r'),
-				sys.stdout.flush()
+	 			sys.stdout.flush()
+ 			sys.stdout.write('\r'),
 def decompresser(tar_archive_path):
 	tar_archive = tar_archive_path.split('/')[-1]
 	path = tar_archive_path.replace('/' + tar_archive, '')
@@ -118,29 +125,24 @@ def decompresser(tar_archive_path):
 			print "%sDecompressing %s %s" % (info.process, clrs.BOLD + tar_archive + clrs.ENDC, info.success('succeeded'))
 		except:
 			print "%sDecompressing %s %s" % (info.process, clrs.BOLD + tar_archive + clrs.ENDC, info.fail('failed'))
-			if promt("Continue anyway? (y/n)") != 'y':
-				sys.exit()
-	
+			os.remove(tar_archive_path)
 
 
 def main():
 	# +++ GATHERING INFORMATION +++
-	import yaml
-	config_options = ['TEST']
+	config_options_setup = ['TEST']
 	main_directory = 'BigBrother'
 	print info.header("gathering information")
-	with open('config.yml', 'r') as yaml_config_file:
-		print "%sReading YAML configuration file..." % info.process
-		try:
-			yaml_config = yaml.load(yaml_config_file)
-		except yaml.YAMLError as exc:
-			print(info.error(exc))
+	print "%sReading YAML configuration file..." % info.process
+	yaml_config = load_yaml('config.yml')
 	# config lists
+	user_private_token = raw_input("%s%sInsert the GitLab private token: %s" % (info.user_input, clrs.WARNING, clrs.ENDC))
 	modules_directories = yaml_config['module_directories'] # modules directories
 	modules_directories_subfolders = yaml_config['module_directories_subfolders']
 	download_repositories = yaml_config['download_repositories']
 	python_module_to_import = yaml_config['python_modules_needed']
 	# info
+	print "%s%sPRIVATE_TOKEN%s = %s" % (info.config, clrs.BOLD, clrs.ENDC, yaml_config['private_token'])
 	print "%sTotal directories gathered: %s%s%s" % (info.info, clrs.BOLD, len(modules_directories) + len(modules_directories_subfolders), clrs.ENDC)
 	print "%sPython modules needed: %s%s%s"% (info.info, clrs.BOLD, len(python_module_to_import), clrs.ENDC)
 	if promt("%sContinue? (y/n)%s" % (clrs.BOLD + clrs.WARNING, clrs.ENDC)) != 'y':
@@ -167,35 +169,31 @@ def main():
 		# subfolder
 		for module_directory in modules_directories_subfolders:
 			init_dir(main_directory + '/' + directory + '/' + module_directory)
-	
+
 
 	# +++ DOWNLOADING MODULES +++
 	print "%s" % info.header("downloading modules")
 	for module in download_repositories:
-		donwloader(module, main_directory + '/' + modules_directories[0])
+		donwloader(module, main_directory + '/' + modules_directories[0], user_private_token)
 	print "                                                    \r",
 	print "%sDownloaded %s%d%s modules" % (info.info, clrs.BOLD, len(download_repositories), clrs.ENDC)
 
 
 	# +++ DECOMPRESSING MODULES
 	print "%s" % info.header("decompressing modules")
-	for module in download_repositories:
+	for module in download_repositories: 
 		decompresser(main_directory + '/' + modules_directories[0] + '/' + module['path'] + '/' + module['name'] + '.tar.gz')
+
 
 	# ++ CONFIG ++
 	config = ConfigParser.RawConfigParser()
 	print "%s" % info.header("configuration")
-	edit_config = promt("%s%sCustomize config.cfg file? (y/n) %s" % (info.info, clrs.WARNING, clrs.ENDC))
-	print ''
-	if edit_config == 'y':
-		print "%s%s%sediting config.cfg%s" % (info.info, clrs.BOLD, clrs.FAIL, clrs.ENDC)
-		config.add_section('main')
-		for option in config_options:
-			user_set = raw_input("%s%s: " % (info.user_input, option))
-			config.set('main', option, user_set)
-	else:
-		config.add_section('main')
-		config.set('main', 'TEST', 'test')
+	print "%s%s%sediting config.cfg%s" % (info.info, clrs.BOLD, clrs.FAIL, clrs.ENDC)
+	config.add_section('user_profile')
+	config.set('user_profile', 'PRIVATE_TOKEN', user_private_token)
+	for option in config_options_setup:
+		user_set = raw_input("%s%s: " % (info.user_input, clrs.BOLD + option + clrs.ENDC))
+		config.set('user_profile', option, user_set)
 	# write in config file
 	with open('BigBrother/config.cfg', 'wb') as configfile:
 		config.write(configfile)

