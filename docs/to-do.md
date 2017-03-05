@@ -1,4 +1,4 @@
 # setup.py
-* [ ] ask private token
-* [ ] organize in directories
+* [x] ask private token
+* [x] organize in directories
 * [ ] method to manage dependencies

@@ -1,7 +1,7 @@
 import ConfigParser
 import tarfile
 import yaml
-import sys, os, os.path
+import sys, shutil, os, os.path
 
 # +++ CLASSES +++
 class _Getch:
@@ -50,16 +50,19 @@ class info:
 	user_input = clrs.OKGREEN + '[$] ' + clrs.ENDC
 	@staticmethod
 	def header(string):
-		return  "%s" % (clrs.BOLD + clrs.OKBLUE + '---' + string.upper() + clrs.ENDC)
+		return "%s" % (clrs.BOLD + clrs.OKBLUE + '---' + string.upper() + clrs.ENDC)
 	@staticmethod
 	def error(string):
 		return "%s" % (clrs.FAIL + clrs.BOLD + '[*] ERROR: ' + string.upper() + clrs.ENDC)
 	@staticmethod
 	def success(string):
-		return"%s" % (clrs.OKGREEN + string + clrs.ENDC)
+		return "%s" % (clrs.OKGREEN + string + clrs.ENDC)
 	@staticmethod
 	def fail(string):
-		return"%s" % (clrs.FAIL + string + clrs.ENDC)	
+		return "%s" % (clrs.FAIL + string + clrs.ENDC)	
+	@staticmethod
+	def bold(string):
+		return "%s" % (clrs.BOLD + str(string) + clrs.ENDC)
 
 # +++ FUNCTIONS +++
 def promt(string, new_line=True):
@@ -84,7 +87,7 @@ def init_dir(directory):
 		if promt("Continue anyway? (y/n)") != 'y':
 				sys.exit()
 def importer(module):
-	print "%sImporting %s" % (info.process, clrs.BOLD + module + clrs.ENDC),
+	print "%sImporting %s" % (info.process, info.bold(module)),
 	try:
 		print info.success("succeeded")
 		exec("import " + module, globals())
@@ -96,10 +99,14 @@ def importer(module):
 		except:
 			print info.error("pip required, install pip") 
 def donwloader(module, path, priv_token):
-	absolute_path = path + '/' + module['path'] + '/' + module['name'] + '.tar.gz'
+	absolute_path = '/'.join([path, module['path'], module['name'] + '.tar.gz'])
 	with open(absolute_path, "wb") as module_file:
-		print "%sDownloading %s" % (info.process, clrs.BOLD + module['name'] + clrs.ENDC)
-		response = requests.get(module['url'] + '&private_token=' + priv_token, stream=True)
+		print "%sDownloading %s" % (info.process, info.bold(module['name']))
+		try:
+			response = requests.get(module['url'] + '&private_token=' + priv_token, stream=True)
+		except:
+			print info.error("you are offline")
+			sys.exit()
 		total_length = response.headers.get('content-length')
 		if total_length is None: # no content length header
 			module_file.write(response.content)
@@ -117,15 +124,25 @@ def decompresser(tar_archive_path):
 	tar_archive = tar_archive_path.split('/')[-1]
 	path = tar_archive_path.replace('/' + tar_archive, '')
 	absolute_path = path + '/' + tar_archive.replace('.tar.gz', '')
-	os.makedirs(absolute_path)
-	with tarfile.open(tar_archive_path, 'r:gz') as tar:
-		try:
+	try:
+		with tarfile.open(tar_archive_path, 'r:gz') as tar:
 			tar.extractall(absolute_path)
-			os.remove(tar_archive_path)
-			print "%sDecompressing %s %s" % (info.process, clrs.BOLD + tar_archive + clrs.ENDC, info.success('succeeded'))
-		except:
-			print "%sDecompressing %s %s" % (info.process, clrs.BOLD + tar_archive + clrs.ENDC, info.fail('failed'))
-			os.remove(tar_archive_path)
+			print "%sDecompressing %s %s" % (info.process, info.bold(tar_archive), info.success('succeeded'))
+			return 1
+	except:
+		print "%sDecompressing %s %s" % (info.process, info.bold(tar_archive), info.fail('failed'))
+		return 0
+	finally:
+		os.remove(tar_archive_path)
+def cleaner(path, file_to_del):
+	target = os.path.join(path, os.listdir(path)[0])		# -
+	for file in os.listdir(target):							# | Move all files in directory
+		shutil.move(os.path.join(target, file), path)		# | extracted in external dir
+	shutil.rmtree(target)									# -
+	for file in os.listdir(path):
+		for entry in file_to_del:
+			if file == entry:
+				os.remove(os.path.join(path, file))
 
 
 def main():
@@ -141,10 +158,11 @@ def main():
 	modules_directories_subfolders = yaml_config['module_directories_subfolders']
 	download_repositories = yaml_config['download_repositories']
 	python_module_to_import = yaml_config['python_modules_needed']
+	file_to_delete = yaml_config['file_to_delete']
 	# info
-	print "%s%sPRIVATE_TOKEN%s = %s" % (info.config, clrs.BOLD, clrs.ENDC, yaml_config['private_token'])
-	print "%sTotal directories gathered: %s%s%s" % (info.info, clrs.BOLD, len(modules_directories) + len(modules_directories_subfolders), clrs.ENDC)
-	print "%sPython modules needed: %s%s%s"% (info.info, clrs.BOLD, len(python_module_to_import), clrs.ENDC)
+	print "%s%s = %s" % (info.config, info.bold("PRIVATE_TOKEN"), user_private_token)
+	print "%sTotal directories gathered: %s" % (info.info, info.bold(len(modules_directories) + len(modules_directories_subfolders)))
+	print "%sPython modules needed: %s"% (info.info, info.bold(len(python_module_to_import)))
 	if promt("%sContinue? (y/n)%s" % (clrs.BOLD + clrs.WARNING, clrs.ENDC)) != 'y':
 		sys.exit()
 	print '\r',
@@ -156,43 +174,54 @@ def main():
 
 
 	# +++ INITIALIZING +++
-	print "%s" % info.header("initialization")
+	print info.header("initialization")
 	# main directory
 	if not os.path.exists(main_directory):
 		init_dir(main_directory)			
 	else:
-		print "%s" % info.error("folder called BigBrother")
+		print info.error("folder called BigBrother")
 		sys.exit()
 	# modules directories
 	for num, directory in enumerate(modules_directories):
-		init_dir(main_directory + '/' + directory)
+		init_dir(os.path.join(main_directory, directory))
 		# subfolder
 		for module_directory in modules_directories_subfolders:
-			init_dir(main_directory + '/' + directory + '/' + module_directory)
+			init_dir(os.path.join(main_directory, directory, module_directory))
 
 
 	# +++ DOWNLOADING MODULES +++
-	print "%s" % info.header("downloading modules")
+	print info.header("downloading modules")
 	for module in download_repositories:
-		donwloader(module, main_directory + '/' + modules_directories[0], user_private_token)
+		donwloader(module, os.path.join(main_directory, modules_directories[0]), user_private_token)
 	print "                                                    \r",
-	print "%sDownloaded %s%d%s modules" % (info.info, clrs.BOLD, len(download_repositories), clrs.ENDC)
+	print "%sDownloaded %s modules" % (info.info, info.bold(len(download_repositories)))
 
 
 	# +++ DECOMPRESSING MODULES
-	print "%s" % info.header("decompressing modules")
+	print info.header("decompressing modules")
+	pre_path = os.path.join(main_directory, modules_directories[0])
+	decompressed_files_count = 0
 	for module in download_repositories: 
-		decompresser(main_directory + '/' + modules_directories[0] + '/' + module['path'] + '/' + module['name'] + '.tar.gz')
+		decompressed_files_count += decompresser(os.path.join(pre_path, module['path'], module['name'] + '.tar.gz'))
+	print "%sTotal decompressed files: %s" % (info.info, info.bold(decompressed_files_count))
 
 
-	# ++ CONFIG ++
+	# +++ CLEANING +++
+	print info.header("cleaning")
+	print "%sFiles to remove: %s" % (info.info, info.bold(len(file_to_delete)))
+	print "%sTotal file to remove: %s" % (info.info, info.bold(decompressed_files_count * 3))
+	for module in download_repositories:
+		cleaner(os.path.join(pre_path, module['path'], module['name']), file_to_delete)
+
+
+	# +++ CONFIG +++
 	config = ConfigParser.RawConfigParser()
 	print "%s" % info.header("configuration")
 	print "%s%s%sediting config.cfg%s" % (info.info, clrs.BOLD, clrs.FAIL, clrs.ENDC)
 	config.add_section('user_profile')
 	config.set('user_profile', 'PRIVATE_TOKEN', user_private_token)
 	for option in config_options_setup:
-		user_set = raw_input("%s%s: " % (info.user_input, clrs.BOLD + option + clrs.ENDC))
+		user_set = raw_input("%s%s: " % (info.user_input, info.bold(option)))
 		config.set('user_profile', option, user_set)
 	# write in config file
 	with open('BigBrother/config.cfg', 'wb') as configfile:
