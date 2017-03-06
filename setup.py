@@ -139,10 +139,13 @@ def cleaner(path, file_to_del):
 	for file in os.listdir(target):							# | Move all files in directory
 		shutil.move(os.path.join(target, file), path)		# | extracted in external dir
 	shutil.rmtree(target)									# -
-	for file in os.listdir(path):
-		for entry in file_to_del:
-			if file == entry:
-				os.remove(os.path.join(path, file))
+	for file in os.listdir(path):							# -
+		for entry in file_to_del:							# | Remove all files that have
+			if file == entry:								# | to be deleted in config.yml
+				if os.path.isdir(file):						# | 
+					shutli.rmtree(os.path.join(path, file))	# | 
+				else:										# | 
+					os.remove(os.path.join(path, file))		# -
 
 
 def main():
@@ -152,8 +155,15 @@ def main():
 	print info.header("gathering information")
 	print "%sReading YAML configuration file..." % info.process
 	yaml_config = load_yaml('config.yml')
+	print "%sSearching %s" % (info.process, info.bold(".gitlab_priv_token")),
+	try:
+		with open(os.path.join(os.path.expanduser('~'), '.gitlab_priv_token'), 'r') as private_file:
+			user_private_token = private_file.readline().replace('\n', '')
+		print info.success("found")
+	except:
+		print info.fail("not found")
+		user_private_token = raw_input("%s%sInsert the GitLab private token: %s" % (info.user_input, clrs.WARNING, clrs.ENDC))
 	# config lists
-	user_private_token = raw_input("%s%sInsert the GitLab private token: %s" % (info.user_input, clrs.WARNING, clrs.ENDC))
 	modules_directories = yaml_config['module_directories'] # modules directories
 	modules_directories_subfolders = yaml_config['module_directories_subfolders']
 	download_repositories = yaml_config['download_repositories']
@@ -162,7 +172,8 @@ def main():
 	# info
 	print "%s%s = %s" % (info.config, info.bold("PRIVATE_TOKEN"), user_private_token)
 	print "%sTotal directories gathered: %s" % (info.info, info.bold(len(modules_directories) + len(modules_directories_subfolders)))
-	print "%sPython modules needed: %s"% (info.info, info.bold(len(python_module_to_import)))
+	print "%sPython modules needed: %s" % (info.info, info.bold(len(python_module_to_import)))
+	print "%sModules to download: %s" % (info.info, info.bold(len(download_repositories)))
 	if promt("%sContinue? (y/n)%s" % (clrs.BOLD + clrs.WARNING, clrs.ENDC)) != 'y':
 		sys.exit()
 	print '\r',
@@ -209,10 +220,14 @@ def main():
 	# +++ CLEANING +++
 	print info.header("cleaning")
 	print "%sFiles to remove: %s" % (info.info, info.bold(len(file_to_delete)))
-	print "%sTotal file to remove: %s" % (info.info, info.bold(decompressed_files_count * 3))
+	print "%sTotal files to remove: %s" % (info.info, info.bold(decompressed_files_count * 3))
 	for module in download_repositories:
-		cleaner(os.path.join(pre_path, module['path'], module['name']), file_to_delete)
-
+		print "%s%s" % (info.process, module['name']),
+		try:
+			cleaner(os.path.join(pre_path, module['path'], module['name']), file_to_delete)
+			print info.success("cleaned")
+		except:
+			print info.fail("not cleaned")
 
 	# +++ CONFIG +++
 	config = ConfigParser.RawConfigParser()
