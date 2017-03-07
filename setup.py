@@ -78,6 +78,11 @@ def load_yaml(file_name):
 			return yaml.load(yaml_config_file)
 		except yaml.YAMLError as exc:
 			print(info.error(exc))
+def authenticate():
+	euid = os.geteuid()
+	if euid != 0:
+		print "%s%sPlease run as root%s" % (info.info, clrs.FAIL + clrs.BOLD, clrs.ENDC)
+		sys.exit()
 def init_dir(directory):
 	try: 
 		os.makedirs(directory)
@@ -149,9 +154,12 @@ def cleaner(path, file_to_del):
 
 
 def main():
+	# authentication
+	authenticate()
+	
 	# +++ GATHERING INFORMATION +++
 	config_options_setup = ['TEST']
-	main_directory = 'BigBrother'
+	main_directory = '/usr/share/BigBrother'
 	print info.header("gathering information")
 	print "%sReading YAML configuration file..." % info.process
 	yaml_config = load_yaml('config.yml')
