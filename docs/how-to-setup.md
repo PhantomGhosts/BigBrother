@@ -1,2 +1,2 @@
 # Linux
-Run **setup.py**
+Run **setup.py** as root.
