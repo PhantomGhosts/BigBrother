@@ -3,6 +3,6 @@
 ### console.py
 module to initialize the console and the command promt
 ## setup.py
-Create a 'BigBrother' folder in *usr/share* and store move into 'modules' all repository that the user has access to.
+Create a 'BigBrother' folder in *usr/share* and move into 'modules' all repository that the user has access to.
 ## config.yml
 All information to downlaod repos and init dirs.
