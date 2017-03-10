@@ -65,7 +65,7 @@ class info:
 		return "%s" % (clrs.BOLD + str(string) + clrs.ENDC)
 
 # +++ FUNCTIONS +++
-def promt(string, new_line=True):
+def prompt(string, new_line=True):
 	x = _Getch()
 	if new_line:
 		print "%s" % string,
@@ -89,7 +89,7 @@ def init_dir(directory):
 		print "%sfolder %s %s" % (info.process, directory, info.success("initialized"))
 	except:
 		print "%sfolder %s %s" % (info.process, directory, info.fail("not initialized"))
-		if promt("Continue anyway? (y/n)") != 'y':
+		if prompt("Continue anyway? (y/n)") != 'y':
 				sys.exit()
 def importer(module):
 	print "%sImporting %s" % (info.process, info.bold(module)),
@@ -182,7 +182,7 @@ def main():
 	print "%sTotal directories gathered: %s" % (info.info, info.bold(len(modules_directories) + len(modules_directories_subfolders)))
 	print "%sPython modules needed: %s" % (info.info, info.bold(len(python_module_to_import)))
 	print "%sModules to download: %s" % (info.info, info.bold(len(download_repositories)))
-	if promt("%sContinue? (y/n)%s" % (clrs.BOLD + clrs.WARNING, clrs.ENDC)) != 'y':
+	if prompt("%sContinue? (y/n)%s" % (clrs.BOLD + clrs.WARNING, clrs.ENDC)) != 'y':
 		sys.exit()
 	print '\r',
 
