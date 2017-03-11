@@ -8,9 +8,23 @@ stdpath = ''
 def __init__(scr, path):
 	stdscr = scr
 	stdpath = path
+# LOW LEVEL FUNCTIONS
+def extract_path(path):
+	if path.find('modules/') == -1:
+		raise Exception
+	path = path.split('modules/')[-1]
+	folders = []
+	while 1:
+		path, folder = os.path.split(path)
+		if folder != "":
+			folders.append(folder)
+		else:
+			if path != "":
+				folders.append(path)
+			break
+	folders.reverse()
+	return folders
 # SELECT
-def back():
-	stdscr.console.path = stdscr.console.path.split("modules/")[-1]
 def select():
 	stdscr.sign_border('select', console.clrs.BLUE)
 	while len(console.extract_path(stdscr.console.path)) != 5:
@@ -36,15 +50,21 @@ def select():
 			stdscr.screen.addstr(folder, console.use_color('008') + curses.A_BOLD)
 			# NORMALIZE END
 
-			curses.curs_set(0)
-			stdscr.screen.keypad(1)
-			curses.init_pair(20, curses.COLOR_BLACK, curses.COLOR_YELLOW)
-			highlight = curses.color_pair(20)
-			normal = curses.A_NORMAL
-			while (1):
-				stdscr.
-			stdscr.screen.keypad(0)
-			curses.curs_set(2)
+	curses.curs_set(0)													# + hide cursor
+	stdscr.screen.keypad(1)												# + allow keypad getchar
+	curses.init_pair(20, curses.COLOR_BLACK, curses.COLOR_YELLOW)		# + init pair highlight
+	highlight = curses.color_pair(20)									# + highlight effect
+	normal = curses.A_NORMAL											# + normal effect
+	position = 1														# + position to highlight
+	max_row = stdscr.Y - 1												# + max row
+	while (1):
+		row_num = len(os.listdir(stdpath))								# + len of row
+		if row_num < max_row:											# - if too many elements
+			stdscr.console.write_log("ERROR.0001: Too many elements in thys folder to display it")
+			break														# -
+		stdscr.
+	stdscr.screen.keypad(0)
+	curses.curs_set(2)
 
 			# NORMALIZE START
 			# ADD REVERSE SELECT
@@ -64,7 +84,6 @@ def select():
 			from math import *
 
 
-
 			screen = curses.initscr()
 			curses.noecho()
 			curses.cbreak()
@@ -75,7 +94,7 @@ def select():
 			normalText = curses.A_NORMAL
 			screen.border( 0 )
 			curses.curs_set( 0 )
-"""			max_row = 10 #max number of rows
+			max_row = 10 #max number of rows
 			box = curses.newwin( max_row + 2, 64, 1, 1 )
 			box.box()
 
@@ -86,7 +105,7 @@ def select():
 			pages = int( ceil( row_num / max_row ) )
 			position = 1
 			page = 1
-			for i in range( 1, max_row + 1 ):
+"""			for i in range( 1, max_row + 1 ):
 			    if row_num == 0:
 			        box.addstr( 1, 1, "There aren't strings", highlightText )
 			    else:

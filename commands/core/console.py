@@ -159,7 +159,8 @@ class info(object):
 		scr.addstr("] ")
 		scr.refresh()
 
-# FUNCTIONS
+# +++ FUNCTIONS +++
+# BASIC LEVEL
 def color_translation(string):
 	# color translation
 	string_list = []
