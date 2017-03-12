@@ -23,5 +23,4 @@ module_directories_subfolders:
   - windows/anagenesis/ypnokratos/rootkit
 python_modules_needed:
   - requests
-  - shlex
 ...

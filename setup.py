@@ -34,7 +34,7 @@ class _GetchWindows:
 	def __call__(self):
 		import msvcrt
 		return msvcrt.getch()
-class clrs:
+class clrs(object):
 	HEADER = '\033[95m'
 	OKBLUE = '\033[94m'
 	OKGREEN = '\033[92m'
@@ -43,7 +43,7 @@ class clrs:
 	ENDC = '\033[0m'
 	BOLD = '\033[1m'
 	UNDERLINE = '\033[4m'
-class info:
+class info(object):
 	info = clrs.OKBLUE + '[#] ' + clrs.ENDC
 	process = clrs.WARNING + '[+] ' + clrs.ENDC
 	config = clrs.HEADER + '[@] ' + clrs.ENDC
@@ -247,7 +247,7 @@ def main():
 		user_set = raw_input("%s%s: " % (info.user_input, info.bold(option)))
 		config.set('user_profile', option, user_set)
 	# write in config file
-	with open('BigBrother/config.cfg', 'wb') as configfile:
+	with open('config.cfg', 'wb') as configfile:
 		config.write(configfile)
 
 
