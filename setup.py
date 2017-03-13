@@ -170,8 +170,11 @@ def main():
 	except:
 		print info.fail("not found")
 		user_private_token = raw_input("%s%sInsert the GitLab private token: %s" % (info.user_input, clrs.WARNING, clrs.ENDC))
+	installation_path = raw_input("%s%sPath for BigBrother installation (default: '/usr/share/BigBrother'): %s" % (info.user_input, clrs.WARNING, clrs.ENDC))
+	if installation_path == ord('\n'):
+		installation_path = "/usr/share/BigBrother"
 	# config lists
-	main_directory = yaml_config['main_directory']
+	main_directory = installation_path
 	modules_directories = yaml_config['module_directories'] # modules directories
 	modules_directories_subfolders = yaml_config['module_directories_subfolders']
 	download_repositories = yaml_config['download_repositories']

@@ -7,7 +7,6 @@ file_to_delete:
   - LICENSE
   - CHANGELOG.md
     url: https://gitlab.com/PhantomGhosts/Windows_api-Keylogger/repository/archive.tar.gz?ref=master
-main_directory: /usr/share/BigBrother
 module_directories:
   - modules
 module_directories_subfolders:
