@@ -20,6 +20,4 @@ module_directories_subfolders:
   - windows/anagenesis/katascopos/keylogger
   - windows/anagenesis/katascopos/screenshoter
   - windows/anagenesis/ypnokratos/rootkit
-python_modules_needed:
-  - requests
 ...

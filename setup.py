@@ -91,18 +91,6 @@ def init_dir(directory):
 		print "%sfolder %s %s" % (info.process, directory, info.fail("not initialized"))
 		if prompt("Continue anyway? (y/n)") != 'y':
 				sys.exit()
-def importer(module):
-	print "%sImporting %s" % (info.process, info.bold(module)),
-	try:
-		print info.success("succeeded")
-		exec("import " + module, globals())
-	except:
-		print info.fail("failed")
-		print "%sInstalling %s" % (info.process, module)
-		try:
-			os.system("pip install %s -q" % module)
-		except:
-			print info.error("pip required, install pip") 
 def donwloader(module, path, priv_token):
 	absolute_path = '/'.join([path, module['path'], module['name'] + '.tar.gz'])
 	with open(absolute_path, "wb") as module_file:
@@ -178,22 +166,14 @@ def main():
 	modules_directories = yaml_config['module_directories'] # modules directories
 	modules_directories_subfolders = yaml_config['module_directories_subfolders']
 	download_repositories = yaml_config['download_repositories']
-	python_module_to_import = yaml_config['python_modules_needed']
 	file_to_delete = yaml_config['file_to_delete']
 	# info
 	print "%s%s = %s" % (info.config, info.bold("PRIVATE_TOKEN"), user_private_token)
 	print "%sTotal directories gathered: %s" % (info.info, info.bold(len(modules_directories) + len(modules_directories_subfolders)))
-	print "%sPython modules needed: %s" % (info.info, info.bold(len(python_module_to_import)))
 	print "%sModules to download: %s" % (info.info, info.bold(len(download_repositories)))
 	if prompt("%sContinue? (y/n)%s" % (clrs.BOLD + clrs.WARNING, clrs.ENDC)) != 'y':
 		sys.exit()
 	print '\r',
-
-
-	# +++ IMPORTING +++
-	for module in python_module_to_import:
-		importer(module)
-
 
 	# +++ INITIALIZING +++
 	print info.header("initialization")
