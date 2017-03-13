@@ -2,11 +2,11 @@
 download_repositories:
   - name: windows_api
     path: windows/anagenesis/katascopos/keylogger
+    url: https://gitlab.com/PhantomGhosts/Windows_api-Keylogger/repository/archive.tar.gz?ref=master
 file_to_delete:
   - README.md
   - LICENSE
   - CHANGELOG.md
-    url: https://gitlab.com/PhantomGhosts/Windows_api-Keylogger/repository/archive.tar.gz?ref=master
 module_directories:
   - modules
 module_directories_subfolders:

@@ -5,6 +5,7 @@ BigBrother is a collection of tools for the purpose of gaining information quiet
 
 # Versioning
 The Semantic Versioning is used in this repository in this format:
+
 	[major].[minor].[patch]-{status}
 
 * **major** indicates incopatible changes
@@ -18,7 +19,15 @@ for more informations see [Semantic Versioning](http://semver.org/)
 Tools are divided based on this [**Nomenclature**](docs/nomenclature.md).
 
 # Setup
-To setup please see the [**Setup Guide**](docs/how-to-setup.md)
+Extract all files from the archive, then pip to install all required dependencies:
+
+	pip install -r requirements.txt
+
+Then launch 'setup.py':
+
+	python setup.py
+
+This will install BigBrother by default in "/usr/share/BigBrother"
 
 # Contribute
 To contribute to this project please see [Contribute](CONTRIBUTING.md) and join in our **Slack Group** emailing one moderator.

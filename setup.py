@@ -53,7 +53,7 @@ class info(object):
 		return "%s" % (clrs.BOLD + clrs.OKBLUE + '---' + string.upper() + clrs.ENDC)
 	@staticmethod
 	def error(string):
-		return "%s" % (clrs.FAIL + clrs.BOLD + '[*] ERROR: ' + string.upper() + clrs.ENDC)
+		return "%s" % (clrs.FAIL + clrs.BOLD + '[*] ERROR: ' + str(string).upper() + clrs.ENDC)
 	@staticmethod
 	def success(string):
 		return "%s" % (clrs.OKGREEN + string + clrs.ENDC)
@@ -171,7 +171,7 @@ def main():
 		print info.fail("not found")
 		user_private_token = raw_input("%s%sInsert the GitLab private token: %s" % (info.user_input, clrs.WARNING, clrs.ENDC))
 	installation_path = raw_input("%s%sPath for BigBrother installation (default: '/usr/share/BigBrother'): %s" % (info.user_input, clrs.WARNING, clrs.ENDC))
-	if installation_path == ord('\n'):
+	if installation_path == '':
 		installation_path = "/usr/share/BigBrother"
 	# config lists
 	main_directory = installation_path
@@ -250,7 +250,7 @@ def main():
 		user_set = raw_input("%s%s: " % (info.user_input, info.bold(option)))
 		config.set('user_profile', option, user_set)
 	# write in config file
-	with open('config.cfg', 'wb') as configfile:
+	with open(os.path.join(main_directory, 'config.cfg'), 'wb') as configfile:
 		config.write(configfile)
 
 
