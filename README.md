@@ -1,5 +1,6 @@
-![BigBrother is watching you](https://github.com/PhantomGhosts/BigBrother/blob/master/docs/logo.jpg)
+<div style="text-align:center"><img src ="docs/logo.jpg" /></div>
 [![Documentation Status](https://readthedocs.org/projects/bigbrother/badge/?version=latest)](http://bigbrother.readthedocs.io/en/latest/?badge=latest)
+
 BigBrother is a collection of tools for the purpose of gaining information quietly.
 
 # Versioning
