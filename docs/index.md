@@ -13,7 +13,7 @@ The Semantic Versioning is used in this repository in this format:
 * **patch** indicates bug fixies
 * **status** show the status (alpha, beta, rc, etc.)
 
-for more informations see [Semantic Versioning](http://semver.org/)
+for more information see [Semantic Versioning](http://semver.org/)
 
 # Tools
 Tools are divided based on this [**Nomenclature**](docs/nomenclature.md).

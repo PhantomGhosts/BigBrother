@@ -30,16 +30,16 @@ Every tool in **BigBrother** has an own name based on this nomenclature:
 
 # Species
 ## Keylogger
-*for more informations see [Keylogger](windows/anagenesis/katascopos/keylogger/keylogger.md)*
+*for more information see [Keylogger](windows/anagenesis/katascopos/keylogger/keylogger.md)*
 * [**WindowsAPI**](https://gitlab.com/PhantomGhosts/Windows_api-Keylogger)
 
 ## Screenshoter
-*for more informations see [Screenshoter](windows/anagenesis/katascopos/screenshoter/screenshoter.md)*
+*for more information see [Screenshoter](windows/anagenesis/katascopos/screenshoter/screenshoter.md)*
 
 for the moment these species are *uncharted*.
 
 ## Rootkits
-*for more informations see [Rootkit](windows/anagenesis/ypnokratos/rootkit/rootkit.md)*
+*for more information see [Rootkit](windows/anagenesis/ypnokratos/rootkit/rootkit.md)*
 * **Phantom** - *NoData*
 
 for the moment the other species are *uncharted*.
