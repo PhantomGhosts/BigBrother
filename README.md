@@ -30,4 +30,4 @@ Then launch 'setup.py':
 This will install BigBrother by default in "/usr/share/BigBrother"
 
 # Contribute
-To contribute to this project please see [Contribute](CONTRIBUTING.md) and join in our **Slack Group** emailing one moderator.
+To contribute to this project please see [Contribute](docs/CONTRIBUTING.md) and join in our **Slack Group** emailing one moderator.

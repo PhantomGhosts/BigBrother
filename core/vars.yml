@@ -1,0 +1,12 @@
+---
+# INFO
+author: Mr.Robot
+appname: BigBrother
+version: 0.1.0
+status: Alpha
+codename: camera
+license: MIT
+
+# PATH 
+database_path: 
+...

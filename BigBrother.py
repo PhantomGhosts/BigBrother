@@ -6,21 +6,21 @@
 import sys
 import os
 from optparse import OptionParser
-# from imports.update_handler import Updater            # TODO
-# from imports import manysearches                      # TODO
-# from imports import muchmuchstrings                   # TODO
-# from imports.eula_handler import EULA                 # TODO
-# from imports.globals import vars                      # TODO
-# from imports.terminal_handler import Controller       # TODO
-# from imports import db_handler                        # TODO
+# from core.update_handler import Updater            # TODO
+# from core import manysearches                      # TODO
+# from core import muchmuchstrings                   # TODO
+# from core.eula_handler import EULA                 # TODO
+from core.globals import vars
+# from core.terminal_handler import Controller       # TODO
+# from core import db_handler                        # TODO
 
-__version__ = "0.2.0 Camera"
-__codename__ = "Camera"
-__appname__ = "BigBrother"
-__authors__ = ["Mr.Robot"]
-__licensev__ = "MIT"
-__maintainer = "Mr.Robot"
-__status__ = "Alpha"
+__version__ = ' '.join(vars.version, vars.codename)
+__codename__ = vars.codename
+__appname__ = vars.appname
+__authors__ = vars.author
+__licensev__ = vars.license
+__maintainer = vars.author
+__status__ = vars.status
 
 
 def main():

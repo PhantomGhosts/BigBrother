@@ -1,22 +1,32 @@
-import os.path
+#!/usr/bin/env python
 
-class clrs(object):
-    CYAN = '\033[96m'
-    MAGENTA = '\033[95m'
-    BLUE = '\033[94m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-    REVERSE = '\033[7m'
-    @staticmethod
-    def format_clr(string, col):
-        try:
-            return "{0}{1}{2}".format(eval("clrs.%s" % col), string, clrs.ENDC)
-        except IOError:
-            print "wrong color format"
+PURPLE = '\033[95m'
+BLUE = '\033[94m'
+GREEN = '\033[92m'
+YELLOW = '\033[93m'
+RED = '\033[91m'
+WHITE = '\033[0m'
+MAGENTA = '\033[35m'
+BOLD = '\033[01m'
+UNDERLINE = '\033[04m'
+
+def bold(str):
+    return BOLD + str + WHITE
+def underline(str):
+    return UNDERLINE + str + WHITE
+def purple(str):
+    return PURPLE + str + WHITE
+def blue(str):
+    return BLUE + str + WHITE
+def green(str):
+    return GREEN + str + WHITE
+def red(str):
+    return RED + str + WHITE
+def yellow(str):
+    return YELLOW + str + WHITE
+def white(str):
+    return WHITE + str + WHITE
+
 class info(object):
     @staticmethod
     def header(string):
@@ -48,18 +58,3 @@ class info(object):
     @staticmethod
     def underline(string):
         return ''.join([clrs.UNDERLINE, str(string), clrs.ENDC])
-def extract_path(path, separator):
-    if path.find(separator) == -1:
-        raise Exception
-    path = path.split(separator)[-1]
-    folders = []
-    while 1:
-        path, folder = os.path.split(path)
-        if folder != "" and path != '/' and path != '\\':
-            folders.append(folder)
-        else:
-            if path != "" and path != '/' and path != '\\':
-                folders.append(path)
-            break
-    folders.reverse()
-    return folder
