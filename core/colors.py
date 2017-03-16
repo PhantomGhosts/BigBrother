@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+CYAN = '\033[96m'
 PURPLE = '\033[95m'
 BLUE = '\033[94m'
 GREEN = '\033[92m'
@@ -14,6 +15,8 @@ def bold(str):
     return BOLD + str + WHITE
 def underline(str):
     return UNDERLINE + str + WHITE
+def cyan(str);
+    return CYAN + str + WHITE
 def purple(str):
     return PURPLE + str + WHITE
 def blue(str):

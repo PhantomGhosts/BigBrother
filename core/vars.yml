@@ -8,5 +8,6 @@ codename: camera
 license: MIT
 
 # PATH 
-database_path: 
+database_path: databases/modules.db
+database_name: modules
 ...

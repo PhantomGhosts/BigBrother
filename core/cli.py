@@ -8,10 +8,10 @@ import sys
 import rlcompleter
 import readline
 
-from core import globals
-# from imports import manysearches
-# from imports.update_handler import Updater
-# from imports import db_handler
+from core.globals import *
+# from core import manysearches
+# from core.update_handler import Updater
+from core import database
 from core.colors import *
 
 # Compatilibility to Python3
@@ -27,9 +27,9 @@ else:
 class Controller(object):
 
     def __init__(self):
-#         self.modules = None
-#         self.currentmodule = None
-#         self.db = db_handler.DBHandler()
+        self.modules = None
+        self.currentmodule = None
+        self.db = database.DBHandler()
         self.commands = [("search", "Search for spywares according to a filter,\n\t\t\texample: 'search cpp worm'."),
                          ("list all", "Lists all available modules"),
                          ("use", "Selects a module by ID"),
@@ -42,48 +42,48 @@ class Controller(object):
         self.commandsWithoutDescription = {'search': '', 'list all': '', 'use': '', 'info': '',
                                            'get': '', 'update-db': '', 'help': '', 'exit': ''}
 
-        self.searchmeth = [("arch", "architecture: x86, x64, arm7 etc..)"),
-                           ("plat", "platform: win32, win64, mac, android etc.."),
-                           ("lang", "language: c, cpp, vbs, bin etc..")]
-                            # ("vip", "1 or 0")]                                WHAT IS VIP?
+        # self.searchmeth = [("arch", "architecture: x86, x64, arm7 etc..)"),
+        #                    ("plat", "platform: win32, win64, mac, android etc.."),
+        #                    ("lang", "language: c, cpp, vbs, bin etc..")]
+        #                    ("vip", "1 or 0")]                                WHAT IS VIP?
 
-#         self.modules = self.GetPayloads()
-#         completer = globals.Completer(self.commandsWithoutDescription)
+        self.modules = self.GetModules()
+        completer = Completer(self.commandsWithoutDescription)
 
         readline.parse_and_bind("tab: complete")
         readline.set_completer(completer.complete)
 
-#     def GetPayloads(self):
-#         return self.db.get_full_details()
+    def GetModules(self):
+        return self.db.get_full_details()
 
-#     def MainMenu(self):
-#         # This will give you the nice prompt you like so much
-#         while (True):  # Dont hate, affiliate
-#             try:
-#                 if self.currentmodule is not None:
-#                     just_print = self.db.query("SELECT NAME FROM Malwares WHERE ID=?", self.currentmodule)[0][0]
-#                     cmd = raw_input(
-#                         bold(green('mdb ')) + bold(blue(just_print)) + green('#> ')).strip()
-#                 else:
-#                     cmd = raw_input(
-#                         bold(green('mdb ')) + green('#> ')).strip()
-#             except KeyboardInterrupt:
-#                 print(bold(blue("\n\n[*]")) + " Hope you enjoyed your visit at" + bold(red(" theZoo")) + "!")
-#                 exit()
+    def MainMenu(self):
+        # This will give you the nice prompt you like so much
+        while (True):
+            try:
+                print_stack = underline('BBro ')
+                if self.currentmodule is not None:
+                    module = self.db.query("SELECT id, specie, family, kingdom FROM %s WHERE ID=?" % vars.db_name, self.currentmodule)[0]
+                    print_stack += "{0}({1})[{2}]".format(bold(cyan(module[1])), bold(yellow(module[2])), bold(red(module[3])))
+                    cmd = raw_input(print_stack + print_stack + ' > ').strip()
+                else:
+                    cmd = raw_input(underline('BBro ') + '> ').strip()
+            except KeyboardInterrupt:
+                print(info.process + bold(red("BigBrother")) + "is always watching you!")
+                exit()
 
-#             self.actOnCommand(cmd)
+            self.actOnCommand(cmd)
 
-#     def actOnCommand(self, cmd):
-#         try:
-#             while cmd == "":
-#                 return
+    def actOnCommand(self, cmd):
+        try:
+            while cmd == "":
+                return
 
-#             if cmd == 'help':
-#                 print(" Available commands:\n")
-#                 for (cmd, desc) in self.commands:
-#                     print("\t%s\t%s" % ('{0: <12}'.format(cmd), desc))
-#                 print('')
-#                 return
+            if cmd == 'help':
+                print(" Available commands:\n")
+                for (cmd, desc) in self.commands:
+                    print("\t%s\t%s" % ('{0: <12}'.format(cmd), desc))
+                print('')
+                return
 
 #             # Checks if normal or freestyle search
 #             if re.match('^search', cmd):
@@ -164,14 +164,14 @@ class Controller(object):
 #             if cmd == 'list all':
 #                 print("\nAvailable Payloads:")
 #                 manySearch = manysearches.MuchSearch()
-#                 manySearch.print_payloads(self.db.get_mal_list(), ["%", "Name", "Type"])
+#                 manySearch.print_payloads(self.db.get_modules_list(), ["%", "Name", "Type"])
 #                 return
 
 #             if cmd == 'info':
 #                 if self.currentmodule is None:
 #                     print(red("[!] ") + "First select a malware using the \'use\' command")
 #                     return
-#                 m = self.db.get_mal_info(self.currentmodule)
+#                 m = self.db.get_mod_info(self.currentmodule)
 #                 manySearch = manysearches.MuchSearch()
 #                 manySearch.print_payloads(m, ["%", "Name", "Ver.", "Author", "Lang", "Date", "Arch.", "Plat.", "Tags"])
 #                 return
@@ -179,6 +179,8 @@ class Controller(object):
 #             if cmd == 'quit':
 #                 print(":(")
 #                 sys.exit(1)
+            else:
+                print(vars.info + "Unknown command: %s" % cmd)
 
 #         except KeyboardInterrupt:
 #             print("\n\nI'll just go now...")
