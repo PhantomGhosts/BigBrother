@@ -12,7 +12,7 @@ from optparse import OptionParser
 # from core.eula_handler import EULA                 # TODO
 from core.globals import vars
 # from core.terminal_handler import Controller       # TODO
-# from core import db_handler                        # TODO
+from core import database
 
 __version__ = ' '.join(vars.version, vars.codename)
 __codename__ = vars.codename
@@ -28,7 +28,7 @@ def main():
     updateHandler = Updater
     eulaHandler = EULA()
     bannerHandler = muchmuchstrings.banners()
-    db = db_handler.DBHandler()
+    db = database.DBHandler()
     terminalHandler = Controller()
 
     def filter_array(array, colum, value):

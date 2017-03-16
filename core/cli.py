@@ -9,7 +9,7 @@ import rlcompleter
 import readline
 
 from core.globals import *
-# from core import manysearches
+# from core import search
 # from core.update_handler import Updater
 from core import database
 from core.colors import *
@@ -85,6 +85,10 @@ class Controller(object):
                 print('')
                 return
 
+            if cmd == 'exit' or cmd == 'quit':
+                print("\n%sExiting..." % info.process)
+                sys.exit(1)
+
 #             # Checks if normal or freestyle search
 #             if re.match('^search', cmd):
 #                 manySearch = manysearches.MuchSearch()
@@ -94,9 +98,6 @@ class Controller(object):
 #                 except:
 #                     print(red('[!]') + 'Uh oh, Invalid query.')
 #                 return
-
-#             if cmd == 'exit':
-#                 sys.exit(1)
 
 #             if cmd == 'update-db':
 #                 update_handler = Updater()
@@ -161,8 +162,8 @@ class Controller(object):
 #                     print('The use method needs an argument.')
 #                 return
 
-#             if cmd == 'list all':
-#                 print("\nAvailable Payloads:")
+#             if cmd == 'list':
+#                 print("\nAvailable Modules:")
 #                 manySearch = manysearches.MuchSearch()
 #                 manySearch.print_payloads(self.db.get_modules_list(), ["%", "Name", "Type"])
 #                 return
@@ -176,12 +177,9 @@ class Controller(object):
 #                 manySearch.print_payloads(m, ["%", "Name", "Ver.", "Author", "Lang", "Date", "Arch.", "Plat.", "Tags"])
 #                 return
 
-#             if cmd == 'quit':
-#                 print(":(")
-#                 sys.exit(1)
             else:
                 print(vars.info + "Unknown command: %s" % cmd)
 
-#         except KeyboardInterrupt:
-#             print("\n\nI'll just go now...")
-#             sys.exit()
+        except KeyboardInterrupt:
+            print("\n%sExiting..." % info.process)
+            sys.exit()
