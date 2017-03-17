@@ -30,7 +30,8 @@ class Controller(object):
         self.modules = None
         self.currentmodule = None
         self.db = database.DBHandler()
-        self.commands = [("search", "Search for spywares according to a filter,\n\t\t\texample: 'search cpp worm'."),
+        self.commands = [("search", "Search for spywares according to a \
+                           filter,\n\t\t\texample: 'search cpp worm'."),
                          ("list all", "Lists all available modules"),
                          ("use", "Selects a module by ID"),
                          ("info", "Retreives information about module"),
@@ -62,8 +63,11 @@ class Controller(object):
             try:
                 print_stack = underline('BBro ')
                 if self.currentmodule is not None:
-                    module = self.db.query("SELECT id, specie, family, kingdom FROM %s WHERE ID=?" % vars.db_name, self.currentmodule)[0]
-                    print_stack += "{0}({1})[{2}]".format(bold(cyan(module[1])), bold(yellow(module[2])), bold(red(module[3])))
+                    module = self.db.query("SELECT id, specie, family, kingdom FROM %s WHERE ID=?" \
+                             % vars.db_name, self.currentmodule)[0]
+                    print_stack += "{0}({1})[{2}]".format(bold(cyan(module[1])), \
+                                                          bold(yellow(module[2])), \
+                                                          bold(red(module[3])))
                     cmd = raw_input(print_stack + print_stack + ' > ').strip()
                 else:
                     cmd = raw_input(underline('BBro ') + '> ').strip()
