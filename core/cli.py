@@ -150,7 +150,7 @@ class Controller(object):
 #             if cmd == 'get':
 #                 update_handler = Updater()
 #                 try:
-#                     update_handler.get_malware(self.currentmodule)
+#                     update_handler.get_module(self.currentmodule)
 #                 except:
 #                     print(red('[-] ') + 'Error getting malware.')
 #                 return

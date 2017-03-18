@@ -4,7 +4,8 @@
     # Copyright 2017, Federico Lolli aka Mr.Robot
 
 import sys
-from os import remove, rename
+from os import remove, rename, mkdir
+import os.path
 
 # Compatilibility to Python3
 if sys.version_info.major == 3:
@@ -16,7 +17,7 @@ else:
     sys.stderr.write("What kind of sorcery is this?!\n")
 
 from core.globals import vars
-# from core import database
+from core import database
 from core.colors import *
 
 class Updater:
@@ -68,47 +69,50 @@ class Updater:
 #         f.close()
 #         return
 
-#     def get_malware(self, id):
+    def get_module(self, id):
+        loc = self.db.get_mod_path(id)[0]  # get mdoule location
+        local = self.db.get_mod_info(id)[0]
+        source_path = '/'.join(vars.download_server, loc[1], loc[0])
+        destpath = os.path.join('modules', local[4], local[3], 
+        						local[2], local[1], local[0])
+        self.download(source_path, destpath, '.dat')	# get from server
+        self.download(source_path, destpath, '.sha256')
+        print(info.process + " Successfully downloaded a new module.\n")
 
-#         # get mal location
+    def download(self, filepath, destpath, suffix=''):
+        if vars.DEBUG_LEVEL is 1:
+            print(locals())
+        file_name = filepath.rsplit('/')[-1] + suffix
 
-#         loc = self.db.query("SELECT LOCATION FROM MALWARES WHERE ID=?", id)[0][0]
-
-#         # get from git
-
-#         self.download_from_repo(loc, '.zip')
-#         self.download_from_repo(loc, '.pass')
-#         self.download_from_repo(loc, '.md5')
-#         self.download_from_repo(loc, '.sha256')
-#         print(bold(green("[+]")) + " Successfully downloaded a new friend.\n")
-
-#     def download_from_repo(self, filepath, suffix=''):
-#         if vars.DEBUG_LEVEL is 1:
-#             print(locals())
-#         file_name = filepath.rsplit('/')[-1] + suffix
-
-#         # Dirty way to check if we're downloading a malware
-
-#         if suffix is not '':
-#             url = vars.giturl_dl + filepath + '/' + file_name
-#         else:
-#             url = vars.giturl_dl + filepath
-#         u = urlopen(url)
-#         f = open(file_name, 'wb')
-#         meta = u.info()
-#         file_size = int(meta.getheaders("Content-Length")[0])
-#         print("Downloading: %s Bytes: %s" % (file_name, file_size))
-#         file_size_dl = 0
-#         block_sz = 8192
-#         while True:
-#             buffer = u.read(block_sz)
-#             if not buffer:
-#                 break
-#             file_size_dl += len(buffer)
-#             f.write(buffer)
-#             status = r"%10d  [%3.2f%%]" % (
-#                 file_size_dl, file_size_dl * 100. / file_size)
-#             status = status + chr(8) * (len(status) + 1)
-#             sys.stdout.write('\r' + status)
-#         f.close()
-#         print("\n")
+        if suffix is not '':
+            url = filepath + '/' + file_name
+        else:
+            url = filepath
+        u = urlopen(url)
+        folders = destpath.split(os.sep)
+        a = None			# init a for store directories to create
+        for x in folders:
+	        if a is not None:
+	        	a = os.path.join(a, x)
+	        else:
+	        	a = x
+	        if os.path.isdir(a) == 0:
+	        	os.mkdir(a)
+        f = open(destpath + file_name, 'wb')
+        meta = u.info()
+        file_size = int(meta.getheaders("Content-Length")[0])
+        print(info.info + "Downloading: %s Bytes: %s" % (file_name, file_size))
+        file_size_dl = 0
+        block_sz = 8192
+        while True:
+            buffer = u.read(block_sz)
+            if not buffer:
+                break
+            file_size_dl += len(buffer)
+            f.write(buffer)
+            status = r"%s%10d  [%3.2f%%]" % (
+                info.process, file_size_dl, file_size_dl * 100. / file_size)
+            status = status + chr(8) * (len(status) + 1)
+            sys.stdout.write('\r' + status)
+        f.close()
+        print("\n")

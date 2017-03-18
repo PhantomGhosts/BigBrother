@@ -5,7 +5,8 @@
 
 BigBrother is a collection of tools for the purpose of gaining information quietly.
 
-# Versioning
+Versioning
+==========
 The Semantic Versioning is used in this repository in this format:
 
 	[major].[minor].[patch]-{status}
@@ -17,10 +18,27 @@ The Semantic Versioning is used in this repository in this format:
 
 for more information see [Semantic Versioning](http://semver.org/)
 
-# Tools
+Tools
+=====
 Tools are divided based on this [**Nomenclature**](docs/nomenclature.md).
 
-# Setup
+## Encryption
+Every tools is stored in a crypted tar.gz file on a server and the user needs an authentication key to install it.
+The 'set' command is used to store own password.
+
+Commands
+========
+
+	set <password>
+
+The **set** command is used to set own secret password to decrypt the modules
+
+	get <module>
+
+The **get** command is used to download the module from the server.
+
+Setup
+=====
 Extract all files from the archive, then pip to install all required dependencies:
 
 	pip install -r requirements.txt
@@ -31,5 +49,6 @@ Then launch 'setup.py':
 
 This will install BigBrother by default in "/usr/share/BigBrother"
 
-# Contribute
+Contribute
+=========
 To contribute to this project please see [Contribute](docs/CONTRIBUTING.md) and join in our **Slack Group** emailing one moderator.

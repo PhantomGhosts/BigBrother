@@ -39,6 +39,7 @@ class vars:
     licensev = config['license']
     db_path = config['database_path']
     db_name = config['database_name']
+    download_server = config['download_server']
 
     # DEBUG_LEVEL 0 = NO DEBUGGING
     # DEBUG_LEVEL 1 = DEBUG DOWNLOADS

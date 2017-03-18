@@ -10,4 +10,7 @@ license: MIT
 # PATH 
 database_path: databases/modules.db
 database_name: modules
+
+# URL
+download_server: http://192.168.1.99/bigbrother/modules
 ...

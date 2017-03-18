@@ -40,7 +40,13 @@ class DBHandler:
 #         return [val[0] for val in self.cur.execute("SELECT DISTINCT TAGS FROM %s WHERE TAGS IS NOT NULL" % vars.db_name).fetchall()]
 
     def get_mod_info(self, mid):
-       return self.cur.execute("SELECT specie, family, class, phylum, kingdom, level FROM %s WHERE id =" % vars.db_name + str(mid)).fetchall()
+        return self.cur.execute("SELECT specie, family, class, phylum, kingdom, level, power FROM %s WHERE id =" \
+            % vars.db_name + str(mid)).fetchall()
+
+
+    def get_mod_path(self, mid):
+        return self.cur.execute("SELECT specie, family FROM %s WHERE id =" \
+            % vars.db_name + str(mid)).fetchall()
 
     def query(self, query, param=''):
         if vars.DEBUG_LEVEL is 2:
