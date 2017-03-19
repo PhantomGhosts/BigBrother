@@ -5,7 +5,9 @@
 
 import sys
 from os import remove, rename, mkdir
+from shutil import rmtree
 import os.path
+import subprocess
 
 # Compatilibility to Python3
 if sys.version_info.major == 3:
@@ -19,6 +21,7 @@ else:
 from core.globals import vars
 from core import database
 from core.colors import *
+from core import crypt
 
 class Updater:
 
@@ -69,15 +72,20 @@ class Updater:
 #         f.close()
 #         return
 
-    def get_module(self, id):
+    def get_module(self, id, password):
         loc = self.db.get_mod_path(id)[0]  # get mdoule location
         local = self.db.get_mod_info(id)[0]
-        source_path = '/'.join(vars.download_server, loc[1], loc[0])
+        source_path = '/'.join(vars.download_server, loc[1], loc[0]).lower()
         destpath = os.path.join('modules', local[4], local[3], 
-        						local[2], local[1], local[0])
-        self.download(source_path, destpath, '.dat')	# get from server
+                                local[2], local[1], local[0]).lower()
+        self.download(source_path, destpath, '.dat')    # get from server
         self.download(source_path, destpath, '.sha256')
-        print(info.process + " Successfully downloaded a new module.\n")
+        print(info.process + "Successfully downloaded a new module.")
+        if self.check_sha256(destpath) == 1:
+            self.installer(destpath, password)
+        else:
+            rmtree(destpath)
+            print(info.process + "removed %s" % loc[0])
 
     def download(self, filepath, destpath, suffix=''):
         if vars.DEBUG_LEVEL is 1:
@@ -90,14 +98,14 @@ class Updater:
             url = filepath
         u = urlopen(url)
         folders = destpath.split(os.sep)
-        a = None			# init a for store directories to create
+        a = None            # init a for store directories to create
         for x in folders:
-	        if a is not None:
-	        	a = os.path.join(a, x)
-	        else:
-	        	a = x
-	        if os.path.isdir(a) == 0:
-	        	os.mkdir(a)
+            if a is not None:
+                a = os.path.join(a, x)
+            else:
+                a = x
+            if os.path.isdir(a) == 0:
+                os.mkdir(a)
         f = open(destpath + file_name, 'wb')
         meta = u.info()
         file_size = int(meta.getheaders("Content-Length")[0])
@@ -116,3 +124,36 @@ class Updater:
             sys.stdout.write('\r' + status)
         f.close()
         print("\n")
+
+    def check_sha256(destpath):
+        files = os.listdir(destpath)
+        sha256sum = None
+        sha256dat = None
+        for f in files:
+            if f.split('.')[-1] == 'sha256':
+                with open(os.path.join(destpath, f), 'r') as sha256:
+                    sha256sum = sha256.readline().split(' ')[0]
+            elif f.split('.')[-1] == 'dat':
+                digester = crypt.HashDigester()
+                sha256dat = digester.sha256_hash(f)
+        
+        if sha256sum == None or sha256dat == None:
+            print(info.error("IOError: .sha256 or .dat not found"))
+            return 0
+        elif sha256sum == sha256dat:
+            print(info.info + "Module %s...Starting installation" % green("intact"))
+            return 1
+        else:
+            print(info.info + "Module %s...Starting removal" % red("corrupted"))
+            return 0
+
+    def installer(destpath, password):
+        for f in os.listdir(destpath):
+            if f.split('.')[-1] == '.dat':
+                aes256 = crypt.AESCipher(password)
+                with open(os.path.join(destpath, f), 'rb') as in_file, \
+                    open(os.path.join(destpath, f.replace('.dat', '.tar.gz'), 'wb')) as out_file:
+                    aes256.decrypt(in_file, out_file)
+                remove(os.path.join(destpath, f))
+            else:
+                remove(os.path.join(destpath, f))

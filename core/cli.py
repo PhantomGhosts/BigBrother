@@ -63,8 +63,8 @@ class Controller(object):
             try:
                 print_stack = underline('BBro ')
                 if self.currentmodule is not None:
-                    module = self.db.query("SELECT id, specie, family, kingdom FROM %s WHERE ID=?" \
-                             % vars.db_name, self.currentmodule)[0]
+                    module = self.db.query("SELECT id, specie, family, kingdom FROM modules WHERE ID=?", 
+                        self.currentmodule)[0]
                     print_stack += "{0}({1})[{2}]".format(bold(cyan(module[1])), \
                                                           bold(yellow(module[2])), \
                                                           bold(red(module[3])))
@@ -147,13 +147,15 @@ class Controller(object):
 
 #                 return
 
-#             if cmd == 'get':
-#                 update_handler = Updater()
-#                 try:
-#                     update_handler.get_module(self.currentmodule)
-#                 except:
-#                     print(red('[-] ') + 'Error getting malware.')
-#                 return
+            if cmd == 'get':
+                update_handler = Updater()
+                try:
+                    password = raw_input(info.user_input + "Insert password to download module")
+                    update_handler.get_module(self.currentmodule, password)
+                except:
+                    print(info.info + red("Error getting malware."))
+                return
+                
 #             # If used the 'use' command
 #             if re.match('^use', cmd):
 #                 try:

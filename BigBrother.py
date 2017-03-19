@@ -24,6 +24,7 @@ __status__ = vars.status
 
 
 def main():
+    
     """                                                 # TODO
     updateHandler = Updater
     eulaHandler = EULA()

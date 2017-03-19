@@ -1,4 +1,6 @@
-# Languages
+Languages
+=========
+If you are already an expert jump to [To-Do](#to-do)
 The languages used in this project are:
 * **Python** - for the main application and User Interface
 * **C++** - for the programs source code, for the speed of processes and portability of source code.
@@ -18,3 +20,8 @@ If you don't know how to code and want to learn some *Python* or some *C* and *C
 
 ### C
 * [The C Programming Language (2nd Edition) - *Brian W. Kernighan*](https://www.amazon.com/Programming-Language-Brian-W-Kernighan/dp/0131103628)
+
+To-Do
+=====
+## Cryptography
+* Add level recognisement and permission (see [globals](../core/globals.py))

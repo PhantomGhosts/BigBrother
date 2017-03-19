@@ -15,7 +15,7 @@ def bold(str):
     return BOLD + str + WHITE
 def underline(str):
     return UNDERLINE + str + WHITE
-def cyan(str);
+def cyan(str):
     return CYAN + str + WHITE
 def purple(str):
     return PURPLE + str + WHITE
@@ -48,7 +48,7 @@ class info(object):
         return ''.join([clrs.GREEN, '[$] ', clrs.ENDC, str(string)])
     @staticmethod
     def error(string, num):
-        return ''.join([clrs.RED, clrs.BOLD, '[*] ERROR.%03d: ' % num, str(string).upper(), clrs.ENDC])
+        return ''.join([clrs.RED, clrs.BOLD, '[*] ERROR: ', str(string).upper(), clrs.ENDC])
     @staticmethod
     def success(string):
         return ''.join([clrs.GREEN, str(string), clrs.ENDC])
