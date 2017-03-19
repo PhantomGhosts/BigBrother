@@ -80,12 +80,12 @@ class Updater:
                                 local[2], local[1], local[0]).lower()
         self.download(source_path, destpath, '.dat')    # get from server
         self.download(source_path, destpath, '.sha256')
-        print(info.process + "Successfully downloaded a new module.")
+        print(info.process("Successfully downloaded a new module."))
         if self.check_sha256(destpath) == 1:
             self.installer(destpath, password)
         else:
             rmtree(destpath)
-            print(info.process + "removed %s" % loc[0])
+            print(info.process("removed %s" % loc[0]))
 
     def download(self, filepath, destpath, suffix=''):
         if vars.DEBUG_LEVEL is 1:
@@ -109,7 +109,7 @@ class Updater:
         f = open(destpath + file_name, 'wb')
         meta = u.info()
         file_size = int(meta.getheaders("Content-Length")[0])
-        print(info.info + "Downloading: %s Bytes: %s" % (file_name, file_size))
+        print(info.info("Downloading: %s Bytes: %s" % (file_name, file_size)))
         file_size_dl = 0
         block_sz = 8192
         while True:
@@ -118,8 +118,8 @@ class Updater:
                 break
             file_size_dl += len(buffer)
             f.write(buffer)
-            status = r"%s%10d  [%3.2f%%]" % (
-                info.process, file_size_dl, file_size_dl * 100. / file_size)
+            status = info.process(r"%10d  [%3.2f%%]" % (
+                file_size_dl, file_size_dl * 100. / file_size))
             status = status + chr(8) * (len(status) + 1)
             sys.stdout.write('\r' + status)
         f.close()
@@ -141,10 +141,10 @@ class Updater:
             print(info.error("IOError: .sha256 or .dat not found"))
             return 0
         elif sha256sum == sha256dat:
-            print(info.info + "Module %s...Starting installation" % green("intact"))
+            print(info.info("Module %s...Starting installation" % green("intact")))
             return 1
         else:
-            print(info.info + "Module %s...Starting removal" % red("corrupted"))
+            print(info.info("Module %s...Starting removal" % red("corrupted")))
             return 0
 
     def installer(destpath, password):

@@ -10,7 +10,7 @@ import readline
 
 from core.globals import *
 # from core import search
-# from core.update_handler import Updater
+from core.update import Updater
 from core import database
 from core.colors import *
 
@@ -59,20 +59,26 @@ class Controller(object):
 
     def MainMenu(self):
         # This will give you the nice prompt you like so much
-        while (True):
+        while 1:
             try:
-                print_stack = underline('BBro ')
+                print_stack = underline('BBro')
                 if self.currentmodule is not None:
-                    module = self.db.query("SELECT id, specie, family, kingdom FROM modules WHERE ID=?", 
-                        self.currentmodule)[0]
-                    print_stack += "{0}({1})[{2}]".format(bold(cyan(module[1])), \
-                                                          bold(yellow(module[2])), \
-                                                          bold(red(module[3])))
-                    cmd = raw_input(print_stack + print_stack + ' > ').strip()
+                    try:
+                        module = self.db.query("SELECT specie, family, kingdom FROM modules WHERE ID=?", 
+                            self.currentmodule)[0]
+                        print_stack += " {0}({1})[{2}]".format(bold(cyan(module[2])), \
+                                                               bold(yellow(module[1])), \
+                                                               bold(red(module[0])))
+                    except:
+                        print(info.info(red('No module with that id.')))
+                        self.currentmodule = None
+                    print(print_stack + ' > '),                             # RESOLVE BUG 001
+                    cmd = raw_input()
                 else:
-                    cmd = raw_input(underline('BBro ') + '> ').strip()
+                    print(print_stack + ' > '),
+                    cmd = raw_input()
             except KeyboardInterrupt:
-                print(info.process + bold(red("BigBrother")) + "is always watching you!")
+                print('\n' + info.process(bold(red("BigBrother")) + " is always watching you!"))
                 exit()
 
             self.actOnCommand(cmd)
@@ -90,7 +96,7 @@ class Controller(object):
                 return
 
             if cmd == 'exit' or cmd == 'quit':
-                print("\n%sExiting..." % info.process)
+                print("\n" + info.process("Exiting..."))
                 sys.exit(1)
 
 #             # Checks if normal or freestyle search
@@ -150,23 +156,23 @@ class Controller(object):
             if cmd == 'get':
                 update_handler = Updater()
                 try:
-                    password = raw_input(info.user_input + "Insert password to download module")
+                    password = raw_input(info.user_input("Insert password to download module: "))
                     update_handler.get_module(self.currentmodule, password)
                 except:
-                    print(info.info + red("Error getting malware."))
+                    print(info.info(red("Error getting module.")))
                 return
-                
-#             # If used the 'use' command
-#             if re.match('^use', cmd):
-#                 try:
-#                     cmd = re.split('\s+', cmd)
-#                     self.currentmodule = int(cmd[1])
-#                     cmd = ''
-#                 except TypeError:
-#                     print('Please enter malware ID')
-#                 except:
-#                     print('The use method needs an argument.')
-#                 return
+
+            # If used the 'use' command
+            if re.match('^use', cmd):
+                try:
+                    cmd = re.split('\s+', cmd)
+                    self.currentmodule = int(cmd[1])
+                    cmd = ''
+                except TypeError:
+                    print('Please enter module ID')
+                except:
+                    print('The use method needs an argument.')
+                return
 
 #             if cmd == 'list':
 #                 print("\nAvailable Modules:")
@@ -184,8 +190,8 @@ class Controller(object):
 #                 return
 
             else:
-                print(vars.info + "Unknown command: %s" % cmd)
+                print(info.info("Unknown command: %s" % cmd))
 
         except KeyboardInterrupt:
-            print("\n%sExiting..." % info.process)
+            print("\n" + info.process("Exiting..."))
             sys.exit()
