@@ -1,4 +1,4 @@
-<p align="center"><img alt="BigBrothe is watching you" src="docs/assets/logo.jpg" /></p> 
+<p align="center"><img alt="BigBrothe is watching you" src="docs/assets/logo.jpg" /></p>
 
 [![Documentation Status](https://readthedocs.org/projects/bigbrother/badge/?version=latest)](http://bigbrother.readthedocs.io/en/latest/?badge=latest)
 [![Code Climate](https://img.shields.io/codeclimate/github/PhantomGhosts/BigBrother.svg)](https://codeclimate.com/github/PhantomGhosts/BigBrother)
@@ -33,12 +33,14 @@ The 'set' command is used to store own password.
 Commands
 ========
 **coming soon**
+
 New version 0.4.0 in pre-alpha phase.
 Commands will come out in 0.4.0 alpha.
 
 Setup
 =====
 **coming soon**
+
 New version 0.4.0 in pre-alpha phase.
 Setup file will come out in 0.4.0 alpha.
 

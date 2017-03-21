@@ -1,6 +1,5 @@
 Languages
 =========
-If you are already an expert jump to [To-Do](#to-do)
 The languages used in this project are:
 * **Python** - for the main application and User Interface
 * **C++** - for the programs source code, for the speed of processes and portability of source code.
