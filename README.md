@@ -1,9 +1,11 @@
 <p align="center"><img alt="BigBrothe is watching you" src="docs/assets/logo.jpg" /></p> 
-
 [![Documentation Status](https://readthedocs.org/projects/bigbrother/badge/?version=latest)](http://bigbrother.readthedocs.io/en/latest/?badge=latest)
+[![Code Climate](https://img.shields.io/codeclimate/github/PhantomGhosts/BigBrother.svg)](https://codeclimate.com/github/PhantomGhosts/BigBrother)
+[![Github All Releases](https://img.shields.io/github/downloads/PhantomGhosts/BigBrother/total.svg)](https://github.com/PhantomGhosts/BigBrother/releases)
 [![MIT License](https://img.shields.io/badge/license-MIT-000000.svg)](LICENSE)
 
 BigBrother is a collection of tools for the purpose of gaining information quietly.
+With an embedded sqlite3 database to store all modules information and locations, thus not all modules need to be installed.
 
 Versioning
 ==========
@@ -22,32 +24,22 @@ Tools
 =====
 Tools are divided based on this [**Nomenclature**](docs/nomenclature.md).
 
-## Encryption
+Encryption
+----------
 Every tools is stored in a crypted tar.gz file on a server and the user needs an authentication key to install it.
 The 'set' command is used to store own password.
 
 Commands
 ========
-
-	set <password>
-
-The **set** command is used to set own secret password to decrypt the modules
-
-	get <module>
-
-The **get** command is used to download the module from the server.
+**coming soon**
+New version 0.4.0 in pre-alpha phase.
+Commands will come out in 0.4.0 alpha.
 
 Setup
 =====
-Extract all files from the archive, then pip to install all required dependencies:
-
-	pip install -r requirements.txt
-
-Then launch 'setup.py':
-
-	python setup.py
-
-This will install BigBrother by default in "/usr/share/BigBrother"
+**coming soon**
+New version 0.4.0 in pre-alpha phase.
+Setup file will come out in 0.4.0 alpha.
 
 Contribute
 =========
