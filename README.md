@@ -1,4 +1,5 @@
 <p align="center"><img alt="BigBrothe is watching you" src="docs/assets/logo.jpg" /></p> 
+
 [![Documentation Status](https://readthedocs.org/projects/bigbrother/badge/?version=latest)](http://bigbrother.readthedocs.io/en/latest/?badge=latest)
 [![Code Climate](https://img.shields.io/codeclimate/github/PhantomGhosts/BigBrother.svg)](https://codeclimate.com/github/PhantomGhosts/BigBrother)
 [![Github All Releases](https://img.shields.io/github/downloads/PhantomGhosts/BigBrother/total.svg)](https://github.com/PhantomGhosts/BigBrother/releases)
