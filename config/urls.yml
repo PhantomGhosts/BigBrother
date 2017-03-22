@@ -1,4 +1,5 @@
 ---
 # ULRS
 main_server: http://192.168.1.99/bigbrother
+repo_url: https://github.com/PhantomGhosts/BigBrother/releases/latest
 ...

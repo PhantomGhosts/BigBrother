@@ -26,6 +26,16 @@ Tools
 =====
 Tools are divided based on this [**Nomenclature**](docs/nomenclature.md).
 
+Integrations
+============
+Sentry
+------
+Sentry integartion can be found in:
+
+	lib/bbro/core/base/sentry.py
+
+It's installed to handle software-side issues.
+
 Encryption
 ----------
 Every tools is stored in a crypted tar.gz file on a server and the user needs an authentication key to install it.

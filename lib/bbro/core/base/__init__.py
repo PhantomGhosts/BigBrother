@@ -1,1 +1,1 @@
-__all__ = ['pather']
+__all__ = ['color', 'pather', 'sentry']
