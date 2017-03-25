@@ -2,3 +2,4 @@ raven
 requests
 beautifulsoup4
 bcrypt
+clint

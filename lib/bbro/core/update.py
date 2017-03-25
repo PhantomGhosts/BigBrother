@@ -5,26 +5,21 @@ Module that update the software and its databases
 '''
 
 import sys
-import requests
-import tarfile
 import os.path
+import tarfile
+import requests
+import clint
+from shutil import rmtree
 from bs4 import BeautifulSoup
 
-
 from base import *
-
-# Compatibility
-if sys.version_info.majoir == 3:
-    pass
-elif sys.version_info.major == 2:
-    pass
 
 class Updater(object):
     def __init__(self, repo_url, ver):
         self.repo_url = repo_url
         self.version = ver
 
-    def update_git(self):
+    def upgrade_git(self, path):
         print(color.info.info("Fetching version from Github"))
         try:
             response = requests.get(self.repo_url)
@@ -45,10 +40,11 @@ class Updater(object):
         else:
             print(color.info.info("New version " + color.bold(
                 "{ver}".format(ver=version)) + "found"))
-            self.install(self.repo_url)
+            self.install(path)
 
     def install(path):
         self.extract(self.download(self.repo_url, path))
+        
 
     # basic functions
     def download(url, path):
@@ -65,3 +61,4 @@ class Updater(object):
         tar = tarfile.open(path)
         tar.extractall(os.path.split(path)[0])
         tar.close()
+        rmtree(path)
