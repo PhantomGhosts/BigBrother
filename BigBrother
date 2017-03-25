@@ -3,26 +3,26 @@
     # BigBrother
     # Copyright 2017, Federico Lolli aka Mr.Robot
 
-import sys
-import os
-from optparse import OptionParser
-from core.update import Updater
+# import sys
+# import os
+# from optparse import OptionParser
+# from core.update import Updater
 # from core import manysearches                      # TODO
 # from core import muchmuchstrings                   # TODO
 # from core.eula_handler import EULA                 # TODO
-from core.globals import vars
-from core.cli import Controller
-from core import database
+# from core.globals import vars
+# from core.cli import Controller
+# from core import database
 
-__version__ = ' '.join([vars.version, vars.codename])
-__codename__ = vars.codename
-__appname__ = vars.appname
-__authors__ = vars.author
-__maintainer = vars.author
-__status__ = vars.status
+# __version__ = ' '.join([vars.version, vars.codename])
+# __codename__ = vars.codename
+# __appname__ = vars.appname
+# __authors__ = vars.author
+# __maintainer = vars.author
+# __status__ = vars.status
 
 
-def main():
+# def main():
                                                  # TODO
     updateHandler = Updater
     # eulaHandler = EULA()
@@ -81,11 +81,11 @@ def main():
     #     sys.exit(1)
 
     # Initiate normal run. No arguments given.
-    os.system('cls' if os.name == 'nt' else 'clear')
-    print(vars.banner)
-    while 1:
-        cli.MainMenu()
-    sys.exit(1)
+    # os.system('cls' if os.name == 'nt' else 'clear')
+    # print(vars.banner)
+    # while 1:
+    #     cli.MainMenu()
+    # sys.exit(1)
 
 
 if __name__ == "__main__":
