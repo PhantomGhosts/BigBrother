@@ -4,22 +4,23 @@
 Module that update the software and its databases
 '''
 
-import sys
 import os.path
-from shutil import rmtree
+from sys import exit
+from os import remove
 import tarfile
 import requests
 from bs4 import BeautifulSoup
 
 from base import *
+from ...clint import progress
 
 class Updater(object):
-    def __init__(self, path, repo_url, ver):
+    def __init__(self, path, ver):
         self.inst_path = path
-        self.repo_url = repo_url
+        self.repo_url = 
         self.version = ver
 
-    def upgradeAll(self):
+    def upgrade_all(self):
         '''
         Upgrade BigBrother completely
         '''
@@ -46,28 +47,49 @@ class Updater(object):
         else:
             print(color.info.info("New version " + color.bold(
                 "{ver}".format(ver=version)) + "found"))
+            # install
+            self.install(self.path, download_url)
 
-            # CONTINUE
-
-    #         self.install(self.path)
-
-    # def install(path):
-    #     self.extract(self.download(self.repo_url, path))
+    def install(path, url):
+        try:
+            archive_path = self.download(url, path)
+            inst = self.extract(archive_path)
+            exit()
+            print(info.success("Installation completed"))
+        except Exception as e:
+            print(color.info.fail("Installation failed"))
+            print(color.info.error(e))
+            return
         
+    def download(url, path):
+        # get name of file to downaload
+        local_filename = url.split('/')[-1]
+        try:
+            stream = requests.get(url, stream=True)
+        except requests.exceptions.RequestException as e:
+            print(color.info.error(e))
+            return
+        abspath = os.path.join(path, local_filename)
+        total_length = int(stream.headers.get('Content-Length'))
+        # write on file
+        with open(abspath, 'wb') as f:
+            for chunk in progress.bar(stream.iter_content(chunk_size=1024), 
+                label=local_filename, expected_size=(total_length/1024)): 
+                if chunk:
+                    f.write(chunk)
+                    f.flush()
+        return abspath
 
-    # # basic functions
-    # def download(url, path):
-    #     local_filename = url.split('/')[-1]
-    #     r = requests.get(url, stream=True)
-    #     abspath = os.path.join(path, local_filename)
-    #     with open(abspath, 'wb') as f:
-    #         for chunk in r.iter_content(chunk_size=1024): 
-    #             if chunk: 
-    #                 f.write(chunk)
-    #     return abspath
-
-    # def extract(path):
-    #     tar = tarfile.open(path)
-    #     tar.extractall(os.path.split(path)[0])
-    #     tar.close()
-    #     rmtree(path)
+    def extract(path):
+        try:
+            tar = tarfile.open(path)
+            repo = tar.getnames()[0]
+            inst_path = os.path.split(path)[0]
+            repo_path = os.path.join(inst_path, repo)
+            tar.extractall()
+        except Exception as e:
+            print(color.info.error(e))
+            return
+        tar.close()
+        
+        remove(path)

@@ -36,3 +36,34 @@ def yellow(str):
 def white(str):
     return WHITE + str + WHITE
 
+class info(object):
+    @staticmethod
+    def header(string):
+        return ''.join([BOLD, BLUE, '---', str(string.upper()), WHITE])
+    @staticmethod
+    def info(string):
+        return '[' + BLUE + '#' + WHITE + '] ' + str(string)
+    @staticmethod
+    def process(string):
+        return '[' + YELLOW + '+' + WHITE + '] ' + str(string)
+    @staticmethod
+    def config(string):
+        return '[' + MAGENTA + '@' + WHITE + '] ' + str(string)
+    @staticmethod
+    def user_input(string):
+        return '[' + GREEN + '$' + WHITE + '] ' + str(string)
+    @staticmethod
+    def error(string, num):
+        return ''.join([RED, BOLD, '[*] ERROR: ', str(string).upper(), WHITE])
+    @staticmethod
+    def success(string):
+        return ''.join([GREEN, str(string), WHITE])
+    @staticmethod
+    def fail(string):
+        return ''.join([RED, str(string), WHITE])
+    @staticmethod
+    def bold(string):
+        return ''.join([BOLD, str(string), WHITE])
+    @staticmethod
+    def underline(string):
+        return ''.join([UNDERLINE, str(string), WHITE])

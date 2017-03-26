@@ -9,7 +9,7 @@ import time
 
 STREAM = sys.stdout
 
-BAR_TEMPLATE = '%s [%s%s] [%3.2f%%] - %s\r'
+BAR_TEMPLATE = '[\x1b[93m+\x1b[0m] %s [%s%s] [%3.2f%%] - %s\r'
 
 BAR_FILLED_CHAR = '\033[01m#\033[0m'
 BAR_EMPTY_CHAR = ' '
