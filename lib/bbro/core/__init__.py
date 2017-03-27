@@ -1,1 +1,1 @@
-__all__ = ['base', 'handlers', 'update']
+__all__ = ['handlers', 'update']

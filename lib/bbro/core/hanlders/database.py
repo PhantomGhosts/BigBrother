@@ -7,7 +7,8 @@ This module consist of functions that manage database.
 import sqlite3 as lite
 import sys
 
-from ..base import *
+from ....base import *
+from ....sentry import sentry
 
 pathHD = pather.PATHandler(__file__)
 
