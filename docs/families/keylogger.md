@@ -13,4 +13,4 @@
 This aim of this kind of user based beings is to quietly recover keystrokes pressed by the user with different tecniques, like *API* or *kernel-mode*.
 
 # Species
-* [**Windwos API**](https://gitlab.com/PhantomGhosts/Windows_api-Keylogger)
+* [**Kakokleptos**](https://gitlab.com/PhantomGhosts/Kakokleptos)

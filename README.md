@@ -32,7 +32,7 @@ Sentry
 ------
 Sentry integartion can be found in:
 
-	lib/bbro/core/base/sentry.py
+	lib/sentry/sentry.py
 
 It's installed to handle software-side issues.
 
