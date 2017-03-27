@@ -4,20 +4,20 @@
 Module that update the software and its databases
 '''
 
+from os
 import os.path
-from sys import exit
-from os import remove
+import shutil
 import tarfile
 import requests
 from bs4 import BeautifulSoup
 
-from base import *
+from ...base import *
+from ...sentry import sentry
 from ...clint import progress
 
 class Updater(object):
     def __init__(self, path, ver):
         self.inst_path = path
-        self.repo_url = 
         self.version = ver
 
     def upgrade_all(self):
@@ -35,7 +35,7 @@ class Updater(object):
         soup = BeautifulSoup(response.content, 'html.parser')
         try:    # Parsing info from page
             version = soup.select("ul.tag-references > li > a > span")[0].text
-            download_url = "https://github.com" + 
+            download_url = "https://github.com" + \
                 soup.select(".release-downloads > li > a")[1]['href']
         except Exception as e:
             sentry.client.captureException()
@@ -48,20 +48,25 @@ class Updater(object):
             print(color.info.info("New version " + color.bold(
                 "{ver}".format(ver=version)) + "found"))
             # install
-            self.install(self.path, download_url)
+            self.install(self.inst_path, download_url)
 
     def install(path, url):
         try:
             archive_path = self.download(url, path)
             inst = self.extract(archive_path)
-            exit()
-            print(info.success("Installation completed"))
+            inst_module = os.path.split(inst)[1]          # IMPROVE PROCESS
+            if inst_module.find('-') != -1:
+                inst_module = inst_module[:inst_module.find('-')]
+                shutil.move(inst, os.path.join(os.path.split(inst)[0], inst_module))
+            print(color.info.success("Installation completed"))
         except Exception as e:
             print(color.info.fail("Installation failed"))
             print(color.info.error(e))
-            return
-        
+
     def download(url, path):
+        '''
+        Download module from [url] to [path]
+        '''
         # get name of file to downaload
         local_filename = url.split('/')[-1]
         try:
@@ -87,9 +92,10 @@ class Updater(object):
             inst_path = os.path.split(path)[0]
             repo_path = os.path.join(inst_path, repo)
             tar.extractall()
+            return repo_path
         except Exception as e:
             print(color.info.error(e))
-            return
-        tar.close()
+        finally:
+            tar.close()
+            os.remove(path)
         
-        remove(path)
