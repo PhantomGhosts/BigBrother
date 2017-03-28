@@ -4,7 +4,7 @@
 [![Documentation Status](https://readthedocs.org/projects/bigbrother/badge/?version=latest)](http://bigbrother.readthedocs.io/en/latest/?badge=latest)
 [![Code Climate](https://img.shields.io/codeclimate/github/PhantomGhosts/BigBrother.svg)](https://codeclimate.com/github/PhantomGhosts/BigBrother)
 [![Github All Releases](https://img.shields.io/github/downloads/PhantomGhosts/BigBrother/total.svg)](https://github.com/PhantomGhosts/BigBrother/releases)
-[![MIT License](https://img.shields.io/badge/license-MIT-000000.svg)](LICENSE)
+[![MIT License](https://img.shields.io/badge/license-MIT-0000FF.svg)](LICENSE)
 
 BigBrother is a collection of tools for the purpose of gaining information quietly.
 With an embedded sqlite3 database to store all modules information and locations, thus not all modules need to be installed.
