@@ -41,6 +41,15 @@ Encryption
 Every tools is stored in a crypted tar.gz file on a server and the user needs an authentication key to install it.
 The 'set' command is used to store own password.
 
+Databases
+=========
+I'm unsure on which use:
+* PostgreSQL
+* MySQL
+
+Or totally different:
+* Redis
+
 Commands
 ========
 **coming soon**
