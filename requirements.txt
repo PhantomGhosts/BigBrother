@@ -1,3 +1,4 @@
+pyyaml
 raven
 requests
 beautifulsoup4

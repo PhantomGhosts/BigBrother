@@ -39,7 +39,7 @@ Every tool in **BigBrother** has an own name based on this nomenclature:
 for the moment these species are *uncharted*.
 
 ## Rootkits
-*for more information see [Rootkit](windows/anagenesis/ypnokratos/rootkit/rootkit.md)*
+*for more information see [Rootkit](families/rootkit.md)*
 * **Phantom** - *NoData*
 
 for the moment the other species are *uncharted*.

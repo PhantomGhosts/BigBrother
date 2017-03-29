@@ -1,5 +1,5 @@
 # Nomenclature
-*for the nomenclature see [Nomenclature](../../../../nomenclature.md)*
+*for the nomenclature see [Nomenclature](../../../../NOMENCLATURE.md)*
 
 | Kinds       	| Names        	|
 |---------------|---------------|
