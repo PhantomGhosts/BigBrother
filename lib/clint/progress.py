@@ -87,7 +87,7 @@ class Bar(object):
             STREAM.write(BAR_TEMPLATE % (
                 self.label, self.filled_char * self.width,
                 self.empty_char * 0, 
-                self.last_progress / self.expected_size * 100, 
+                100, 
                 elapsed_disp))
             STREAM.write('\n')
             STREAM.flush()
