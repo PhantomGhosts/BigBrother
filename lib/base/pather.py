@@ -7,7 +7,7 @@ pathes.
 
 import os.path
 
-class PATHanlder(object):
+class PATHandler(object):
     def __init__(self, file):
         self.file = file
 

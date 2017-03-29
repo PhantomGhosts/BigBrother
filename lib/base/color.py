@@ -53,7 +53,7 @@ class info(object):
     def user_input(string):
         return '[' + GREEN + '$' + WHITE + '] ' + str(string)
     @staticmethod
-    def error(string, num):
+    def error(string):
         return ''.join([RED, BOLD, '[*] ERROR: ', str(string).upper(), WHITE])
     @staticmethod
     def success(string):
