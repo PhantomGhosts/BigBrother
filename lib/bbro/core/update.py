@@ -4,9 +4,10 @@
 Module that update the software and its databases
 '''
 
-from os
-import os.path
+import os
 import shutil
+from sys import exit
+import os.path
 import tarfile
 import requests
 from bs4 import BeautifulSoup
@@ -16,11 +17,12 @@ from ...sentry import sentry
 from ...clint import progress
 
 class Updater(object):
-    def __init__(self, path, ver):
+    def __init__(self, path, ver, url):
         self.inst_path = path
+        self.repo_url = url
         self.version = ver
 
-    def upgrade_all(self):
+    def update_all(self):
         '''
         Upgrade BigBrother completely
         '''
@@ -46,24 +48,33 @@ class Updater(object):
             print(color.info.info("You have already the latest version"))
         else:
             print(color.info.info("New version " + color.bold(
-                "{ver}".format(ver=version)) + "found"))
+                "{ver}".format(ver=version)) + " found"))
             # install
-            self.install(self.inst_path, download_url)
+            if self.install(self.inst_path, download_url):
+                print(color.info.info("Need to be restarted for changes to be effective"))
+                exit()
 
-    def install(path, url):
+    def install(self, path, url):
         try:
-            archive_path = self.download(url, path)
-            inst = self.extract(archive_path)
-            inst_module = os.path.split(inst)[1]          # IMPROVE PROCESS
-            if inst_module.find('-') != -1:
-                inst_module = inst_module[:inst_module.find('-')]
-                shutil.move(inst, os.path.join(os.path.split(inst)[0], inst_module))
-            print(color.info.success("Installation completed"))
+            # downloaded file name
+            dl_file = self.download(url, path)
+            # change directory
+            os.chdir(path)
+            # extract in path directory
+            inst_module = self.extract(dl_file)
+            # normalize name
+            inst_module_norm = inst_module[:inst_module.find('-')]
+            if inst_module_norm in os.listdir():
+                shutil.rmtree(inst_module_norm)
+            shutil.move(inst_module, inst_module_norm)
+            print(color.info.info(color.info.success("Installation completed")))
+            return 1
         except Exception as e:
-            print(color.info.fail("Installation failed"))
+            print(color.info.info(color.info.fail("Installation failed")))
             print(color.info.error(e))
+            return 0
 
-    def download(url, path):
+    def download(self, url, path):
         '''
         Download module from [url] to [path]
         '''
@@ -71,31 +82,39 @@ class Updater(object):
         local_filename = url.split('/')[-1]
         try:
             stream = requests.get(url, stream=True)
+            total_length = int(stream.headers['Content-Length'])
         except requests.exceptions.RequestException as e:
             print(color.info.error(e))
             return
-        abspath = os.path.join(path, local_filename)
-        total_length = int(stream.headers.get('Content-Length'))
+        # change to downlaod dir
+        try:
+            os.chdir(path)
+        except Exception as e:
+            print(color.info.error(e))
+            return
         # write on file
-        with open(abspath, 'wb') as f:
+        with open(local_filename, 'wb') as f:
             for chunk in progress.bar(stream.iter_content(chunk_size=1024), 
                 label=local_filename, expected_size=(total_length/1024)): 
                 if chunk:
                     f.write(chunk)
                     f.flush()
-        return abspath
+        return local_filename
 
-    def extract(path):
+    def extract(self, filename):
         try:
-            tar = tarfile.open(path)
+            tar = tarfile.open(filename)
             repo = tar.getnames()[0]
-            inst_path = os.path.split(path)[0]
-            repo_path = os.path.join(inst_path, repo)
+            # remove old repo
+            if repo in os.listdir():
+                shutil.rmtree(repo)
+            # extract in current directory
             tar.extractall()
-            return repo_path
+            return repo
         except Exception as e:
             print(color.info.error(e))
+            return
         finally:
             tar.close()
-            os.remove(path)
+            os.remove(filename)
         
