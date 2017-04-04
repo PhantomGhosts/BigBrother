@@ -5,33 +5,46 @@ Every tool in **BigBrother** has an own name based on this nomenclature:
 * **Family**
 * **Species**
 
-# Kingdoms
-* [**WINDOWS**](#windows) - microsoft operating system
+Kingdom - Platform
+==================
+Every software is built on different platforms.
 
-# Phylum
+* **[WINDOWS](#windows)** - microsoft operating system
+* **[MULTI](#multi)** - multi platform.
+
+Phylum - Replication
+====================
 ## Windows
-* [**Anagenesis**](#anagenesis) - *Reptilia*: Without reproduction
-* [**Aytogenesis**](#aytogenesis) - *Insecta*: With automatic reproduction
-* [**Paragenesis**](#paragenesis) - *Bacteria*: With particular reproduction
+* **[Anagenesis](#anagenesis)** - *Reptilia*: Without replication
+* **[Aytogenesis](#aytogenesis)** - *Insecta*: With automatic replication
+* **[Paragenesis](#paragenesis)** - *Bacteria*: With event based replication
 
-# Class
+## Multi
+
+TRAITS
+======
+
+Class
+=====
 ## Anagenesis
-* [**Anacrypsis**](#anacrypsis) - *Squamata*: Hidden and cryptic beings.
-* [**Katascopos**](#katascopos) - *Crocodilia*: Overseers beings. 
-* [**Ypnokratos**](#ypnokratos) - *Dinosauria*: The most powerful beings, they remain hidden until they choose to reaveal themself.
+* **[Anacrypsis](#anacrypsis)** - *Squamata*: Hidden and cryptic beings.
+* **[Katascopos](#katascopos)** - *Crocodilia*: Overseers beings. 
+* **[Ypnokratos](#ypnokratos)** - *Dinosauria*: The most powerful beings, they remain hidden until they choose to reaveal themself.
 
-# Family
+Family
+======
 ## Katascopos
-* [**Keylogger**](#keylogger)
-* [**Screenshoter**](#screenshoter)
+* **[Keylogger](#keylogger)**
+* **[Screenshoter](#screenshoter)**
 
 ## Ypnokratos
-* [**Rootkit**](#rootkit)
+* **[Rootkit](#rootkit)**
 
-# Species
+Species
+=======
 ## Keylogger
 *for more information see [Keylogger](windows/anagenesis/katascopos/keylogger/keylogger.md)*
-* [**Kakokleptos**](https://gitlab.com/PhantomGhosts/Kakokleptos)
+* **[Kakokleptos](https://gitlab.com/PhantomGhosts/Kakokleptos)**
 
 ## Screenshoter
 *for more information see [Screenshoter](windows/anagenesis/katascopos/screenshoter/screenshoter.md)*
