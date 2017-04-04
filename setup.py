@@ -1,255 +1,117 @@
-import ConfigParser
-import tarfile
-import yaml
-import sys, shutil, os, os.path
+# # This is purely the result of trial and error.
 
-# +++ CLASSES +++
-class _Getch:
-	# Gets a single character from standard input.  Does not echo to the screen.
-	def __init__(self):
-		try:
-			self.impl = _GetchWindows()
-		except ImportError:
-			self.impl = _GetchUnix()
+# import sys
+# import codecs
 
-	def __call__(self): return self.impl()
-class _GetchUnix:
-	def __init__(self):
-		import tty, sys
+# from setuptools import setup, find_packages
+# from setuptools.command.test import test as TestCommand
 
-	def __call__(self):
-		import sys, tty, termios
-		fd = sys.stdin.fileno()
-		old_settings = termios.tcgetattr(fd)
-		try:
-			tty.setraw(sys.stdin.fileno())
-			ch = sys.stdin.read(1)
-		finally:
-			termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-		return ch
-class _GetchWindows:
-	def __init__(self):
-		import msvcrt
-
-	def __call__(self):
-		import msvcrt
-		return msvcrt.getch()
-class clrs(object):
-	HEADER = '\033[95m'
-	OKBLUE = '\033[94m'
-	OKGREEN = '\033[92m'
-	WARNING = '\033[93m'
-	FAIL = '\033[91m'
-	ENDC = '\033[0m'
-	BOLD = '\033[1m'
-	UNDERLINE = '\033[4m'
-class info(object):
-	info = clrs.OKBLUE + '[#] ' + clrs.ENDC
-	process = clrs.WARNING + '[+] ' + clrs.ENDC
-	config = clrs.HEADER + '[@] ' + clrs.ENDC
-	user_input = clrs.OKGREEN + '[$] ' + clrs.ENDC
-	@staticmethod
-	def header(string):
-		return "%s" % (clrs.BOLD + clrs.OKBLUE + '---' + string.upper() + clrs.ENDC)
-	@staticmethod
-	def error(string):
-		return "%s" % (clrs.FAIL + clrs.BOLD + '[*] ERROR: ' + string.upper() + clrs.ENDC)
-	@staticmethod
-	def success(string):
-		return "%s" % (clrs.OKGREEN + string + clrs.ENDC)
-	@staticmethod
-	def fail(string):
-		return "%s" % (clrs.FAIL + string + clrs.ENDC)	
-	@staticmethod
-	def bold(string):
-		return "%s" % (clrs.BOLD + str(string) + clrs.ENDC)
-
-# +++ FUNCTIONS +++
-def prompt(string, new_line=True):
-	x = _Getch()
-	if new_line:
-		print "%s" % string,
-	else:
-		print "%s" % string
-	return x()
-def load_yaml(file_name):
-	with open(file_name, 'r') as yaml_config_file:
-		try:
-			return yaml.load(yaml_config_file)
-		except yaml.YAMLError as exc:
-			print(info.error(exc))
-def authenticate():
-	euid = os.geteuid()
-	if euid != 0:
-		print "%s%sPlease run as root%s" % (info.info, clrs.FAIL + clrs.BOLD, clrs.ENDC)
-		sys.exit()
-def init_dir(directory):
-	try: 
-		os.makedirs(directory)
-		print "%sfolder %s %s" % (info.process, directory, info.success("initialized"))
-	except:
-		print "%sfolder %s %s" % (info.process, directory, info.fail("not initialized"))
-		if prompt("Continue anyway? (y/n)") != 'y':
-				sys.exit()
-def importer(module):
-	print "%sImporting %s" % (info.process, info.bold(module)),
-	try:
-		print info.success("succeeded")
-		exec("import " + module, globals())
-	except:
-		print info.fail("failed")
-		print "%sInstalling %s" % (info.process, module)
-		try:
-			os.system("pip install %s -q" % module)
-		except:
-			print info.error("pip required, install pip") 
-def donwloader(module, path, priv_token):
-	absolute_path = '/'.join([path, module['path'], module['name'] + '.tar.gz'])
-	with open(absolute_path, "wb") as module_file:
-		print "%sDownloading %s" % (info.process, info.bold(module['name']))
-		try:
-			response = requests.get(module['url'] + '&private_token=' + priv_token, stream=True)
-		except:
-			print info.error("you are offline")
-			sys.exit()
-		total_length = response.headers.get('content-length')
-		if total_length is None: # no content length header
-			module_file.write(response.content)
-		else:
-			data_length = 0
-			total_length = int(total_length)
-			for data in response.iter_content(chunk_size=4096):
-				data_length += len(data)
-				module_file.write(data)
-				done = int(50 * data_length / total_length)
-				sys.stdout.write("\r[%s%s]" % ('=' * done, ' ' * (50-done)) )
-	 			sys.stdout.flush()
- 			sys.stdout.write('\r'),
-def decompresser(tar_archive_path):
-	tar_archive = tar_archive_path.split('/')[-1]
-	path = tar_archive_path.replace('/' + tar_archive, '')
-	absolute_path = path + '/' + tar_archive.replace('.tar.gz', '')
-	try:
-		with tarfile.open(tar_archive_path, 'r:gz') as tar:
-			tar.extractall(absolute_path)
-			print "%sDecompressing %s %s" % (info.process, info.bold(tar_archive), info.success('succeeded'))
-			return 1
-	except:
-		print "%sDecompressing %s %s" % (info.process, info.bold(tar_archive), info.fail('failed'))
-		return 0
-	finally:
-		os.remove(tar_archive_path)
-def cleaner(path, file_to_del):
-	target = os.path.join(path, os.listdir(path)[0])		# -
-	for file in os.listdir(target):							# | Move all files in directory
-		shutil.move(os.path.join(target, file), path)		# | extracted in external dir
-	shutil.rmtree(target)									# -
-	for file in os.listdir(path):							# -
-		for entry in file_to_del:							# | Remove all files that have
-			if file == entry:								# | to be deleted in config.yml
-				if os.path.isdir(file):						# | 
-					shutli.rmtree(os.path.join(path, file))	# | 
-				else:										# | 
-					os.remove(os.path.join(path, file))		# -
+# import httpie
 
 
-def main():
-	# authentication
-	authenticate()
-	
-	# +++ GATHERING INFORMATION +++
-	config_options_setup = ['TEST']
-	print info.header("gathering information")
-	print "%sReading YAML configuration file..." % info.process
-	yaml_config = load_yaml('config.yml')
-	print "%sSearching %s" % (info.process, info.bold(".gitlab_priv_token")),
-	try:
-		with open(os.path.join(os.path.expanduser('~'), '.gitlab_priv_token'), 'r') as private_file:
-			user_private_token = private_file.readline().replace('\n', '')
-		print info.success("found")
-	except:
-		print info.fail("not found")
-		user_private_token = raw_input("%s%sInsert the GitLab private token: %s" % (info.user_input, clrs.WARNING, clrs.ENDC))
-	# config lists
-	main_directory = yaml_config['main_directory']
-	modules_directories = yaml_config['module_directories'] # modules directories
-	modules_directories_subfolders = yaml_config['module_directories_subfolders']
-	download_repositories = yaml_config['download_repositories']
-	python_module_to_import = yaml_config['python_modules_needed']
-	file_to_delete = yaml_config['file_to_delete']
-	# info
-	print "%s%s = %s" % (info.config, info.bold("PRIVATE_TOKEN"), user_private_token)
-	print "%sTotal directories gathered: %s" % (info.info, info.bold(len(modules_directories) + len(modules_directories_subfolders)))
-	print "%sPython modules needed: %s" % (info.info, info.bold(len(python_module_to_import)))
-	print "%sModules to download: %s" % (info.info, info.bold(len(download_repositories)))
-	if prompt("%sContinue? (y/n)%s" % (clrs.BOLD + clrs.WARNING, clrs.ENDC)) != 'y':
-		sys.exit()
-	print '\r',
+# class PyTest(TestCommand):
+#     # `$ python setup.py test' simply installs minimal requirements
+#     # and runs the tests with no fancy stuff like parallel execution.
+#     def finalize_options(self):
+#         TestCommand.finalize_options(self)
+#         self.test_args = [
+#             '--doctest-modules', '--verbose',
+#             './httpie', './tests'
+#         ]
+#         self.test_suite = True
+
+#     def run_tests(self):
+#         import pytest
+#         sys.exit(pytest.main(self.test_args))
 
 
-	# +++ IMPORTING +++
-	for module in python_module_to_import:
-		importer(module)
+# tests_require = [
+#     # Pytest needs to come last.
+#     # https://bitbucket.org/pypa/setuptools/issue/196/
+#     'pytest-httpbin',
+#     'pytest',
+#     'mock',
+# ]
 
 
-	# +++ INITIALIZING +++
-	print info.header("initialization")
-	# main directory
-	if not os.path.exists(main_directory):
-		init_dir(main_directory)			
-	else:
-		print info.error("folder called BigBrother")
-		sys.exit()
-	# modules directories
-	for num, directory in enumerate(modules_directories):
-		init_dir(os.path.join(main_directory, directory))
-		# subfolder
-		for module_directory in modules_directories_subfolders:
-			init_dir(os.path.join(main_directory, directory, module_directory))
+# install_requires = [
+#     'requests>=2.11.0',
+#     'Pygments>=2.1.3'
+# ]
 
 
-	# +++ DOWNLOADING MODULES +++
-	print info.header("downloading modules")
-	for module in download_repositories:
-		donwloader(module, os.path.join(main_directory, modules_directories[0]), user_private_token)
-	print "                                                    \r",
-	print "%sDownloaded %s modules" % (info.info, info.bold(len(download_repositories)))
+# # Conditional dependencies:
+
+# # sdist
+# if 'bdist_wheel' not in sys.argv:
+#     try:
+#         # noinspection PyUnresolvedReferences
+#         import argparse
+#     except ImportError:
+#         install_requires.append('argparse>=1.2.1')
+
+#     if 'win32' in str(sys.platform).lower():
+#         # Terminal colors for Windows
+#         install_requires.append('colorama>=0.2.4')
 
 
-	# +++ DECOMPRESSING MODULES
-	print info.header("decompressing modules")
-	pre_path = os.path.join(main_directory, modules_directories[0])
-	decompressed_files_count = 0
-	for module in download_repositories: 
-		decompressed_files_count += decompresser(os.path.join(pre_path, module['path'], module['name'] + '.tar.gz'))
-	print "%sTotal decompressed files: %s" % (info.info, info.bold(decompressed_files_count))
+# # bdist_wheel
+# extras_require = {
+#     # http://wheel.readthedocs.io/en/latest/#defining-conditional-dependencies
+#     ':python_version == "2.6"'
+#     ' or python_version == "3.0"'
+#     ' or python_version == "3.1" ': ['argparse>=1.2.1'],
+#     ':sys_platform == "win32"': ['colorama>=0.2.4'],
+# }
 
 
-	# +++ CLEANING +++
-	print info.header("cleaning")
-	print "%sFiles to remove: %s" % (info.info, info.bold(len(file_to_delete)))
-	print "%sTotal files to remove: %s" % (info.info, info.bold(decompressed_files_count * 3))
-	for module in download_repositories:
-		print "%s%s" % (info.process, module['name']),
-		try:
-			cleaner(os.path.join(pre_path, module['path'], module['name']), file_to_delete)
-			print info.success("cleaned")
-		except:
-			print info.fail("not cleaned")
-
-	# +++ CONFIG +++
-	config = ConfigParser.RawConfigParser()
-	print "%s" % info.header("configuration")
-	print "%s%s%sediting config.cfg%s" % (info.info, clrs.BOLD, clrs.FAIL, clrs.ENDC)
-	config.add_section('user_profile')
-	config.set('user_profile', 'PRIVATE_TOKEN', user_private_token)
-	for option in config_options_setup:
-		user_set = raw_input("%s%s: " % (info.user_input, info.bold(option)))
-		config.set('user_profile', option, user_set)
-	# write in config file
-	with open('config.cfg', 'wb') as configfile:
-		config.write(configfile)
+# def long_description():
+#     with codecs.open('README.rst', encoding='utf8') as f:
+#         return f.read()
 
 
-if __name__ == "__main__":
-	main()
+# setup(
+#     name='httpie',
+#     version=httpie.__version__,
+#     description=httpie.__doc__.strip(),
+#     long_description=long_description(),
+#     url='http://httpie.org/',
+#     download_url='https://github.com/jakubroztocil/httpie',
+#     author=httpie.__author__,
+#     author_email='jakub@roztocil.co',
+#     license=httpie.__licence__,
+#     packages=find_packages(),
+#     entry_points={
+#         'console_scripts': [
+#             'http = httpie.__main__:main',
+#         ],
+#     },
+#     extras_require=extras_require,
+#     install_requires=install_requires,
+#     tests_require=tests_require,
+#     cmdclass={'test': PyTest},
+#     classifiers=[
+#         'Development Status :: 5 - Production/Stable',
+#         'Programming Language :: Python',
+#         'Programming Language :: Python :: 2',
+#         'Programming Language :: Python :: 2.6',
+#         'Programming Language :: Python :: 2.7',
+#         'Programming Language :: Python :: 3',
+#         'Programming Language :: Python :: 3.1',
+#         'Programming Language :: Python :: 3.2',
+#         'Programming Language :: Python :: 3.3',
+#         'Programming Language :: Python :: 3.4',
+#         'Programming Language :: Python :: 3.5',
+#         'Programming Language :: Python :: 3.6',
+#         'Environment :: Console',
+#         'Intended Audience :: Developers',
+#         'Intended Audience :: System Administrators',
+#         'License :: OSI Approved :: BSD License',
+#         'Topic :: Internet :: WWW/HTTP',
+#         'Topic :: Software Development',
+#         'Topic :: System :: Networking',
+#         'Topic :: Terminals',
+#         'Topic :: Text Processing',
+#         'Topic :: Utilities'
+#     ],
+# )
